@@ -36,7 +36,7 @@ public class Graph {
     }
     
     public Graph(final String fileName) throws FileNotFoundException {
-        this(read(fileName));
+        this(readWeightedGDF(fileName));
     }
     
     public void dijkstra(final String start) {
@@ -115,6 +115,48 @@ public class Graph {
         return graph.get(endPoint).getPath();
     }
     
+    public static LinkedList<Edge> readWeightedGDF(final String fileName) throws FileNotFoundException {
+        
+        LinkedList<Edge> edges = new LinkedList<Edge>();
+        
+        File file = new File("TestList.txt");
+    
+        try {
+            final Scanner SC = new Scanner(file);
+            
+            int vertexCount = 0;
+            
+            SC.nextLine();
+            
+            while (!SC.hasNext("edgedef>node1 VARCHAR,node2 VARCHAR, weight DOUBLE")) {
+                SC.nextLine();
+            }
+            
+            SC.nextLine();
+            
+            while (SC.hasNext()) {              
+                
+                Vertex vertexOne = new Vertex(SC.next(), vertexCount);
+
+                vertexCount++;
+                
+                Vertex vertexTwo= new Vertex(SC.next(), vertexCount);
+
+                vertexCount++;
+                
+                final int weight = SC.nextInt();
+                
+                edges.add(new Edge(vertexOne, vertexTwo, weight));
+            }
+            
+            SC.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+        }
+        
+        return edges;
+    }
+    
     public static LinkedList<Edge> read(final String fileName) throws FileNotFoundException {
         
         LinkedList<Edge> edges = new LinkedList<Edge>();
@@ -156,6 +198,10 @@ public class Graph {
         
         test.dijkstra("c");
         
-        System.out.println(test.getPath("h"));
+        System.out.println(test.getPath("i"));
+        
+        test.dijkstra("a");
+        
+        System.out.println(test.getPath("i"));
     }
 }
