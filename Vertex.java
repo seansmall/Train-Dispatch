@@ -9,6 +9,12 @@ public class Vertex implements Comparable<Vertex> {
     private Vertex prev;
     private int distance = Integer.MAX_VALUE;
     private final Map<Vertex, Integer> adj = new HashMap<>();
+    private Type type;
+    
+    enum Type {
+        station,
+        intermediatePoint
+    }
     
     public Vertex(final String id, final int vertexNum) {
         this.ID = id;
@@ -61,5 +67,13 @@ public class Vertex implements Comparable<Vertex> {
 
     public void setDistance(int distance) {
         this.distance = distance;
-    }   
+    }
+    
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
 }
