@@ -6,7 +6,7 @@ public class Train {
     public Train (int s, int d, int t) {
         source = s;
         destination = d;
-        time = d;
+        time = t;
     }
     
     public int getSource () {
