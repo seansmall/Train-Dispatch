@@ -1,0 +1,131 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Scanner;
+
+
+
+
+public class Simulator {
+	
+	public static void main (final String[] args) {
+		
+		LinkedList<Edge> edges = Simulator.read("TestList.txt");
+
+		Graph graph = new Graph(edges);
+		File sequenceName = new File("TestSequence.txt");
+		ArrayList<Train> sequence = Simulator.readSequence(sequenceName);
+		
+		BaseCase base = new BaseCase(graph, sequence);
+		
+		while (!base.sequenceComplete()) {
+			base.update();
+		}
+		
+		System.out.println(base.getDelaySum());
+	}
+
+    public static LinkedList<Edge> readWeightedGDF(final String fileName) throws FileNotFoundException {
+        
+        LinkedList<Edge> edges = new LinkedList<Edge>();
+        
+        File file = new File(fileName);
+    
+        try {
+            final Scanner SC = new Scanner(file);
+            
+            int vertexCount = 0;
+            
+            SC.nextLine();
+            
+            while (!SC.hasNext("edgedef>node1 VARCHAR,node2 VARCHAR, weight DOUBLE")) {
+                SC.nextLine();
+            }
+            
+            SC.nextLine();
+            
+            while (SC.hasNext()) {              
+                
+                Vertex vertexOne = new Vertex(SC.next(), vertexCount);
+
+                vertexCount++;
+                
+                Vertex vertexTwo= new Vertex(SC.next(), vertexCount);
+
+                vertexCount++;
+                
+                final int weight = SC.nextInt();
+                
+                edges.add(new Edge(vertexOne, vertexTwo, weight));
+            }
+            
+            SC.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+        }
+        
+        return edges;
+    }
+    
+    public static LinkedList<Edge> read(final String fileName) {
+        
+        LinkedList<Edge> edges = new LinkedList<Edge>();
+        
+        File file = new File(fileName);
+    
+        try {
+            final Scanner SC = new Scanner(file);
+            
+            int vertexCount = 0;
+            
+            
+            while (SC.hasNext()) {              
+                
+                Vertex vertexOne = new Vertex(SC.next(), vertexCount);
+
+                vertexCount++;
+                
+                Vertex vertexTwo= new Vertex(SC.next(), vertexCount);
+
+                vertexCount++;
+                
+                final int weight = SC.nextInt();
+                
+                edges.add(new Edge(vertexOne, vertexTwo, weight));
+            }
+            
+            SC.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+        }
+        
+        return edges;
+    }
+    
+    @SuppressWarnings("finally")
+	public static ArrayList<Train> readSequence(final File fileName) {
+    	
+    	ArrayList<Train> seq = new ArrayList<Train>();
+    	
+    	try {
+	    	final Scanner SC = new Scanner(fileName);
+	    	SC.useDelimiter(",");
+	    	
+	    	SC.nextLine();
+	    	int id = 0;
+	    	
+	    	while (SC.hasNext()) {
+	    		seq.add(new Train(SC.nextInt(), SC.nextInt(), SC.nextInt(), id));
+	    		id++;
+	    	}
+	    	
+	    	SC.close();
+	    	return seq;
+    	} catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+        } finally {
+        	return seq;
+        }
+    }
+}
