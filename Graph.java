@@ -1,16 +1,13 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.NavigableSet;
-import java.util.Scanner;
 import java.util.TreeSet;
 
 
 public class Graph {
 
-    private final Map<String, Vertex> graph;
+    private final Map<Integer, Vertex> graph;
     
     public Graph(final LinkedList<Edge> edges) {
         
@@ -19,27 +16,23 @@ public class Graph {
         for (Edge edge : edges) {
             if (!graph.containsKey(edge.getVertexOne().getID())) {
                 
-                graph.put(edge.getVertexOne().getID(), edge.getVertexOne());
+                graph.put(edge.getVertexOne().getVertexNumber(), edge.getVertexOne());
                 
             } else if (!graph.containsKey(edge.getVertexTwo().getID())) {
                 
-                graph.put(edge.getVertexTwo().getID(), edge.getVertexTwo());
+                graph.put(edge.getVertexTwo().getVertexNumber(), edge.getVertexTwo());
             }
         }
         
         for (Edge edge : edges) {
             
-            graph.get(edge.getVertexOne().getID()).getAdj().put(graph.get(edge.getVertexTwo().getID()), edge.getWeight());
+            graph.get(edge.getVertexOne().getVertexNumber()).getAdj().put(graph.get(edge.getVertexTwo().getVertexNumber()), edge.getWeight());
             
-            graph.get(edge.getVertexTwo().getID()).getAdj().put(graph.get(edge.getVertexOne().getID()), edge.getWeight());
+            graph.get(edge.getVertexTwo().getVertexNumber()).getAdj().put(graph.get(edge.getVertexOne().getVertexNumber()), edge.getWeight());
         }
     }
     
-    public Graph(final String fileName) throws FileNotFoundException {
-        this(readWeightedGDF(fileName));
-    }
-    
-    public void dijkstra(final String start) {
+    public void dijkstra(final int start) {
         
         if (!graph.containsKey(start)) {
             System.err.print("No such vertex");
@@ -51,7 +44,7 @@ public class Graph {
         
         for (Vertex vertex : graph.values()) {
             
-            if (vertex.getID().equals(start)) {
+            if (vertex.getVertexNumber() == start) {
                 
                 vertex.setPrev(startingVertex);
             } else {
@@ -59,7 +52,7 @@ public class Graph {
                 vertex.setPrev(null);
             }
             
-            if (vertex.getID().equals(start)) {
+            if (vertex.getVertexNumber() == start) {
                 
                 vertex.setDistance(0);
             } else {
@@ -70,9 +63,6 @@ public class Graph {
             set.add(vertex);
 
         }
-        //for (Vertex v : set) {
-        //    System.out.printf("%s %d ", v.getID(), v.getDistance());
-        //}
         dijkstra(set);
     }
     
@@ -82,7 +72,7 @@ public class Graph {
         
         while(!set.isEmpty()) {
             
-            one = set.pollFirst();                              //TODO pollfirst not returning lowest value
+            one = set.pollFirst();
             
             if (one.getDistance() == Integer.MAX_VALUE) {
                 break;
@@ -100,108 +90,29 @@ public class Graph {
                     two.setPrev(one);
                     set.add(two);
                 }
-                //System.out.printf("%s %s%n", one.getID(), two.getID());
             }
         }
     }
     
-    public String getPath(final String endPoint) {
+    public LinkedList<int[]> getPath(final int endPoint) {
         
         if (!graph.containsKey(endPoint)) {
             System.err.print("No such vertex");
-            return "No such vertex";
         }
         
         return graph.get(endPoint).getPath();
     }
     
-    public static LinkedList<Edge> readWeightedGDF(final String fileName) throws FileNotFoundException {
-        
-        LinkedList<Edge> edges = new LinkedList<Edge>();
-        
-        File file = new File("TestList.txt");
-    
-        try {
-            final Scanner SC = new Scanner(file);
-            
-            int vertexCount = 0;
-            
-            SC.nextLine();
-            
-            while (!SC.hasNext("edgedef>node1 VARCHAR,node2 VARCHAR, weight DOUBLE")) {
-                SC.nextLine();
-            }
-            
-            SC.nextLine();
-            
-            while (SC.hasNext()) {              
-                
-                Vertex vertexOne = new Vertex(SC.next(), vertexCount);
+    //public static void main (final String[] args) throws FileNotFoundException {
 
-                vertexCount++;
-                
-                Vertex vertexTwo= new Vertex(SC.next(), vertexCount);
-
-                vertexCount++;
-                
-                final int weight = SC.nextInt();
-                
-                edges.add(new Edge(vertexOne, vertexTwo, weight));
-            }
-            
-            SC.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found");
-        }
+        //Graph test = new Graph("TestFile");
         
-        return edges;
-    }
-    
-    public static LinkedList<Edge> read(final String fileName) throws FileNotFoundException {
+       // test.dijkstra(3);
         
-        LinkedList<Edge> edges = new LinkedList<Edge>();
+       // System.out.println(test.getPath(5));
         
-        File file = new File("TestList.txt");
-    
-        try {
-            final Scanner SC = new Scanner(file);
-            
-            int vertexCount = 0;
-            
-            
-            while (SC.hasNext()) {              
-                
-                Vertex vertexOne = new Vertex(SC.next(), vertexCount);
-
-                vertexCount++;
-                
-                Vertex vertexTwo= new Vertex(SC.next(), vertexCount);
-
-                vertexCount++;
-                
-                final int weight = SC.nextInt();
-                
-                edges.add(new Edge(vertexOne, vertexTwo, weight));
-            }
-            
-            SC.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found");
-        }
+       // test.dijkstra(1);
         
-        return edges;
-    }
-    
-    public static void main (final String[] args) throws FileNotFoundException {
-
-        Graph test = new Graph("TestFile");
-        
-        test.dijkstra("c");
-        
-        System.out.println(test.getPath("i"));
-        
-        test.dijkstra("a");
-        
-        System.out.println(test.getPath("i"));
-    }
+       // System.out.println(test.getPath(5));
+   // }
 }
