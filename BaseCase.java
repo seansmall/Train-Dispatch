@@ -37,8 +37,8 @@ public class BaseCase {
     
     public void generateRoutes() {
     	for (Train train : sequence) {
-    		graph.dijkstra(train.getSource());
-    		train.setRoute(graph.getPath(train.getDestination()));
+    		graph.dijkstra(train.getSourceName());
+    		train.setRoute(graph.getPath(train.getDestName()));
     	}
     }
 
