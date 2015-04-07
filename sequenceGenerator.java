@@ -11,9 +11,9 @@ public class SequenceGenerator {
 	private static final Random RNG =
             new Random (Long.getLong ("seed", System.nanoTime()));
 	
-	public static final int LENGTH = 10; // length of sequence
-	public static final int GRID_SIZE = 100; // size of the grid
+	public static final int LENGTH = 100; // length of sequence
 	public static final int DAY = 72000; // arbitrary time
+	
 	public static final String[] AMTRAK_STATIONS = {"Miami", "West Palm Beach", "Orlando", "Jacksonville", "Tallahassee",
 		"Pensacola", "Mobile", "New Orleans", "Lafayette", "Houston", "San Antonio", "El Paso", "Tucson",
 		"Maricopa", "Palm Springs", "Los Angeles", "Santa Barbara", "San Luis Obispo", "San Jose", "Oakland",
@@ -41,7 +41,7 @@ public class SequenceGenerator {
 	     }
 	}
 	
-	public static ArrayList<Sequence> createSequence (ArrayList<Sequence> sequence) {
+	public static ArrayList<Sequence> createAmtrakSequence (ArrayList<Sequence> sequence) {
 		
 		for (int i = 0; i < LENGTH; i++) {
 			String s, d;
@@ -56,7 +56,7 @@ public class SequenceGenerator {
 		return sequence;
 	}
 	
-	public static ArrayList<Sequence> sortSequence(ArrayList<Sequence> sequence) {
+	public static ArrayList<Sequence> sortSequence (ArrayList<Sequence> sequence) {
 			
 			// sorts the sequence
 		      for (int i = 0; i < sequence.size(); i++) {
@@ -79,8 +79,12 @@ public class SequenceGenerator {
 			String fileName, String dirName) throws FileNotFoundException,
 			UnsupportedEncodingException {
 		
-		//TODO: Make output look nicer
-		
+		final String source = String.format("%-20.15s", "Source:");
+		final String destination = String.format("%-20.15s", "Destination:");
+		final String depTime = String.format("%-20.15s", "Dep. Time:");
+		final String header = source + destination + depTime;
+		final String underline = "——————————————————————————————————————————————————";
+				
 		// checks if directory name already exists
 		if (!new File(dirName).exists()) {
 			new File(dirName).mkdir();
@@ -91,40 +95,55 @@ public class SequenceGenerator {
 	      if(!f.exists() && !f.isDirectory()) {
 	    	// saves file to directory
 		      PrintWriter writer = new PrintWriter(f, "UTF-8");
-				writer.println("Sour. \t Dest. \t Dep. Time");
+				writer.println(header);
+				writer.println(underline);
 				
 				for (int i = 0; i < sequence.size(); i++) {
-					String s = sequence.get(i).source;
-					String d = sequence.get(i).destination;
-					int dt = sequence.get(i).depatureTime;
-					writer.println(s + "," + d + "," + dt + ",");
+					String s = String.format("%-20.15s", sequence.get(i).source);
+					String d = String.format("%-20.15s", sequence.get(i).destination);
+					String dt = String.format("%10.15s\n", sequence.get(i).depatureTime);
+					writer.println(s + d + dt);
 				}
 				writer.close();
 	      }
 	}
 	
+	public static void printSequence (ArrayList<Sequence> testList) {
+		final String source = String.format("%-20.15s", "Source:");
+		final String destination = String.format("%-20.15s", "Destination:");
+		final String depTime = String.format("%-20.15s", "Dep. Time:");
+		final String header = source + destination + depTime;
+		final String underline = "——————————————————————————————————————————————————";
+		System.out.println(header);
+		System.out.println(underline);
+		
+		for (int i = 0; i < testList.size(); i++) {
+			String s = String.format("%-20.15s", testList.get(i).source);
+			String d = String.format("%-20.15s", testList.get(i).destination);
+			String dt = String.format("%10.15s\n", testList.get(i).depatureTime);
+			System.out.print(s + d + dt);
+		}
+		System.out.print("\n\n");
+	}
+	
 	public static void main (String[] args) {
 		
 		ArrayList<Sequence> testList = new ArrayList<>();
-		createSequence(testList);
+		createAmtrakSequence(testList);
 		
-		System.out.println("Sour. \t Dest. \t Dep. Time");
-		
-		for (int i = 0; i < testList.size(); i++) {
-			System.out.print(testList.get(i).source + "\t");
-			System.out.print(testList.get(i).destination + "\t");
-			System.out.println(testList.get(i).depatureTime);
-		}
+		printSequence(testList);
 		sortSequence(testList);
-		System.out.println();
-		System.out.println("Sour. \t Dest. \t Dep. Time");
 		
-		for (int i = 0; i < testList.size(); i++) {
-			System.out.print(testList.get(i).source + "\t");
-			System.out.print(testList.get(i).destination + "\t");
-			System.out.println(testList.get(i).depatureTime);
+		printSequence(testList);
+		
+		try {
+			saveToTxt(testList, "test", "testfolder");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		
 	}
 }
