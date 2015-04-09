@@ -12,13 +12,13 @@ public class Simulator {
 		ArrayList<Train> sequence = readSequence(sequenceName);
 
 		BaseCase base = new BaseCase(graph, sequence);
-		/*
-		while (!base.sequenceComplete()) {
-			base.update();
-		}
 		
-		System.out.println(base.getDelaySum());
-		*/
+		//while (!base.sequenceComplete()) {
+		//	base.update();
+		//}
+		
+		//System.out.println(base.getDelaySum());
+		
 	}
     
 	public static ArrayList<Train> readSequence(final File fileName) {
@@ -27,14 +27,17 @@ public class Simulator {
     	
     	try {
 	    	final Scanner SC = new Scanner(fileName);
-	    	
+	    	SC.useDelimiter(",\\s*");
 	    	SC.nextLine();
 	    	SC.nextLine();
 	    	
 	    	int id = 0;
-	    	// TODO add delimiter to the sequence gen file writer
 	    	while (SC.hasNext()) {
-	    		seq.add(new Train(SC.next(), SC.next(), SC.nextInt(), id));
+	    	    String source = SC.next();
+	    	    String dest = SC.next();
+	    	    int time = SC.nextInt();
+	    	    
+	    		seq.add(new Train(source, dest, time, id));
 	    		id++;
 	    	}
 	    	
