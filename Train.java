@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -6,16 +7,17 @@ public class Train {
 
     private String sourceName;
     private String destName;
-    private int time;
+    private int departureTime;
     private int ID;
-    private String currentStation;
-    private int expectedArrivalTime;
+    private String lastStation;
+	private int expectedArrivalTime;
     private int actualArrivalTime;
     private String type;
-    private LinkedList<Station> route;
+    private LinkedList<Edge> route;
     private boolean moving;
     private boolean arrived = false;
     private int distanceTraveled = 0;
+    private int routeDistance;
     private int speed = 1;
     
     
@@ -25,36 +27,63 @@ public class Train {
     public Train (final String source, final String dest, final int time, final int id) {
         this.sourceName = source;
         this.destName = dest;
-        this.time = time;
+        this.departureTime = time;
         this.ID= id;
         moving = PARKED;
-        this.route = new LinkedList<Station>();
+        this.route = new LinkedList<Edge>();
     }
     
     public void setRoute(final String routeString){
     	
     	final Scanner SC = new Scanner(routeString);
-        
-    	int dist;
-    	String name;
+        SC.useDelimiter(",\\s*");
+    	
+    	ArrayList<Integer> distances = new ArrayList<Integer>();
+    	ArrayList<String> names = new ArrayList<String>();
     	
         while (SC.hasNext()) {
-            name = SC.next();
-            dist = SC.nextInt();
-            
-            this.route.add(new Station(name, dist));
+            names.add(SC.next());
+            distances.add(SC.nextInt());
+        }
+        SC.close();
+        
+        for (int i = 0; i < names.size() - 1; i++) {
+        	Vertex one = new Vertex(names.get(i));
+        	Vertex two = new Vertex(names.get(i + 1));
+        	int distanceTo = distances.get(i + 1);
+        	route.add(new Edge(one, two, distanceTo));
         }
         
-        SC.close();
-        expectedArrivalTime = this.route.getLast().getDistance() * speed;
+        lastStation = route.getFirst().getVertexOne().getID();
+        expectedArrivalTime = route.getLast().getWeight() * speed + departureTime;
+    }
+    
+	public void move() {
+		distanceTraveled += speed;
+		
+		for (Edge e : route) {
+			if (e.getWeight() == distanceTraveled) {
+				lastStation = e.getVertexTwo().getID();
+			} else if (e.getWeight() > distanceTraveled) {
+				break;
+			}
+		}
+	}
+    
+	public void park() {
+		this.moving = PARKED;
+	}
+	
+	public void running() {
+		this.moving = RUNNING;
+	}
+
+    public int getDelay () {
+        return actualArrivalTime - expectedArrivalTime;
     }
     
     public int getDepatureTime () {
-        return time;
-    }
-    
-    public int getDelay (int actualtime) {
-        return actualtime - time;
+        return departureTime;
     }
     
     public void setType (String t) {
@@ -65,7 +94,7 @@ public class Train {
         return type;
     }
     
-    public LinkedList<Station> getRoute() {
+    public LinkedList<Edge> getRoute() {
         return route;
     }
 
@@ -84,21 +113,13 @@ public class Train {
 	public void setMoving(boolean moving) {
 		this.moving = moving;
 	}
-    
-	public void park() {
-		this.moving = PARKED;
-	}
-	
-	public void running() {
-		this.moving = RUNNING;
-	}
 
 	public String getCurrentStation() {
-		return currentStation;
+		return lastStation;
 	}
 
 	public void setCurrentStation(String currentStation) {
-		this.currentStation = currentStation;
+		this.lastStation = currentStation;
 	}
 
 	public boolean hasArrived() {
@@ -115,10 +136,6 @@ public class Train {
 
 	public void setDistanceTraveled(int distanceTraveled) {
 		this.distanceTraveled = distanceTraveled;
-	}
-	
-	public void move() {
-		distanceTraveled += speed;
 	}
 
 	public int getSpeed() {
@@ -159,5 +176,21 @@ public class Train {
 
 	public void setDestName(String destName) {
 		this.destName = destName;
+	}
+
+	public int getRouteDistance() {
+		return routeDistance;
+	}
+
+	public void setRouteDistance(int routeDistance) {
+		this.routeDistance = routeDistance;
+	}
+	
+    public String getLastStation() {
+		return lastStation;
+	}
+
+	public void setLastStation(String lastStation) {
+		this.lastStation = lastStation;
 	}
 }
