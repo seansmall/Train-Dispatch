@@ -11,7 +11,7 @@ public class SequenceGenerator {
 	private static final Random RNG =
             new Random (Long.getLong ("seed", System.nanoTime()));
 	
-	public static final int LENGTH = 100; // length of sequence
+	public static final int LENGTH = 10; // length of sequence
 	public static final int DAY = 72000; // arbitrary time
 	
 	public static final String[] AMTRAK_STATIONS = {"Miami", "West Palm Beach", "Orlando", "Jacksonville", "Tallahassee",
@@ -22,11 +22,19 @@ public class SequenceGenerator {
 		"Topeka", "Albuquerque", "Flagstaff", "St. Louis", "Little Rock", "Texarkana", "Dallas", "Fort Worth",
 		"Memphis", "Battle Creek", "Detroit", "Indianapolis", "Cincinnati", "Cleveland", "Pittsburgh", "Harrisburg",
 		"Buffalo", "Niagra Falls", "Rochester", "Syracuse", "Albany", "St. Albans", "Springfield", "Boston", "New Haven",
-		"New York", "Trenton", "Philadelphia", "Baltimore", "Washington, DC", "Charlottesville", "Lynchburg", "Greensboro",
-		"Raleigh", "Columbia, SC", "Selma", "Fayetteville", "Charleston", "Richmond", "Charlotte", "Atlanta", "Birmingham",
+		"New York", "Trenton", "Philadelphia", "Baltimore", "Washington", "Charlottesville", "Lynchburg", "Greensboro",
+		"Raleigh", "Columbia", "Selma", "Fayetteville", "Charleston", "Richmond", "Charlotte", "Atlanta", "Birmingham",
 		"Tampa", "Savannah", "Tuscaloosa", "Jackson", "Austin", "San Diego", "San Bernardino", "Bakersfield", "Vancouver",
 		"Milwaukee", "Quincy", "Oklahoma City", "Grand Rapids", "Port Huron", "Pontiac", "Toronto", "Montreal", "Brunswick",
 		"Newport News", "Norfolk"};
+	
+	public static final String[] EUROPE_STATIONS = {"Aix-en-Provence", "Amsterdam", "Angers", "Angoulême", "Antwerpen", "Avignon",
+			"Basel", "Berlin", "Bern", "Bordeaux", "Brussels", "Chambéry", "Dijon", "Dortmund", "Duisberg" ,"Ebbsfleet Int.",
+			"Essen", "Frankfurt airport", "Frankfurt", "Fulda", "Genève", "Hamburg", "Hannover", "Innsbruck", "Interlake",
+			"Karlsruhe", "Köln", "Lausanne", "Le Mans", "Leipzig", "Lille", "Linz", "Liège", "London", "Luxembourg City",
+			"Lyon", "Mannheim", "Marne-La-Vallée", "Marseille", "Massy", "Metz", "Milano", "Montpellier", "Mulhouse", "München",
+			"Nancy", "Nantes", "Nimes", "Nürnberg", "Paris", "Perpignan", "Poitiers", "Reims", "Rennes", "Rotterdam", "Saltzburg",
+			"Schipol airport", "Strasbourg", "Stuttgart", "Torino", "Tours", "Valence", "Wien", "Würzburg", "Zürich"};
 	
 	
 	static class Sequence {
@@ -48,6 +56,21 @@ public class SequenceGenerator {
 			int dt;
 			s = AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)];
 			d = AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)];
+			dt = 1 + RNG.nextInt(DAY);
+			
+			Sequence element = new Sequence(s, d, dt);
+			sequence.add(element);
+		}
+		return sequence;
+	}
+	
+	public static ArrayList<Sequence> createEuropeSequence (ArrayList<Sequence> sequence) {
+		
+		for (int i = 0; i < LENGTH; i++) {
+			String s, d;
+			int dt;
+			s = EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)];
+			d = EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)];
 			dt = 1 + RNG.nextInt(DAY);
 			
 			Sequence element = new Sequence(s, d, dt);
@@ -79,9 +102,9 @@ public class SequenceGenerator {
 			String fileName, String dirName) throws FileNotFoundException,
 			UnsupportedEncodingException {
 		
-		final String source = String.format("%-20.15s", "Source:");
-		final String destination = String.format("%-20.15s", "Destination:");
-		final String depTime = String.format("%-20.15s", "Dep. Time:");
+		final String source = String.format("%-20.17s", "Source:");
+		final String destination = String.format("%-20.17s", "Destination:");
+		final String depTime = String.format("%-20.17s", "Dep. Time:");
 		final String header = source + destination + depTime;
 		final String underline = "——————————————————————————————————————————————————";
 				
@@ -99,9 +122,9 @@ public class SequenceGenerator {
 				writer.println(underline);
 				
 				for (int i = 0; i < sequence.size(); i++) {
-					String s = String.format("%-20.15s", sequence.get(i).source);
-					String d = String.format("%-20.15s", sequence.get(i).destination);
-					String dt = String.format("%10.15s\n", sequence.get(i).depatureTime);
+					String s = String.format("%-20.17s", sequence.get(i).source + ",");
+					String d = String.format("%-20.17s", sequence.get(i).destination + ",");
+					String dt = String.format("%10.17s,\n", sequence.get(i).depatureTime);
 					writer.println(s + d + dt);
 				}
 				writer.close();
@@ -109,18 +132,18 @@ public class SequenceGenerator {
 	}
 	
 	public static void printSequence (ArrayList<Sequence> testList) {
-		final String source = String.format("%-20.15s", "Source:");
-		final String destination = String.format("%-20.15s", "Destination:");
-		final String depTime = String.format("%-20.15s", "Dep. Time:");
+		final String source = String.format("%-20.17s", "Source:");
+		final String destination = String.format("%-20.17s", "Destination:");
+		final String depTime = String.format("%-20.17s", "Dep. Time:");
 		final String header = source + destination + depTime;
 		final String underline = "——————————————————————————————————————————————————";
 		System.out.println(header);
 		System.out.println(underline);
 		
 		for (int i = 0; i < testList.size(); i++) {
-			String s = String.format("%-20.15s", testList.get(i).source);
-			String d = String.format("%-20.15s", testList.get(i).destination);
-			String dt = String.format("%10.15s\n", testList.get(i).depatureTime);
+			String s = String.format("%-20.17s", testList.get(i).source + ",");
+			String d = String.format("%-20.17s", testList.get(i).destination + ",");
+			String dt = String.format("%10.17s,\n", testList.get(i).depatureTime);
 			System.out.print(s + d + dt);
 		}
 		System.out.print("\n\n");
@@ -129,21 +152,18 @@ public class SequenceGenerator {
 	public static void main (String[] args) {
 		
 		ArrayList<Sequence> testList = new ArrayList<>();
-		createAmtrakSequence(testList);
-		
-		printSequence(testList);
+		createEuropeSequence(testList);
 		sortSequence(testList);
-		
 		printSequence(testList);
 		
-		try {
-			saveToTxt(testList, "test", "testfolder");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			saveToTxt(testList, "test", "test");
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }
