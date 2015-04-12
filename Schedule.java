@@ -7,40 +7,42 @@ public class Schedule {
     // removed and marked done.
     
     private LinkedList<Train> runningList;
-    
-    
-    public Schedule() {
+
+	public Schedule() {
     	runningList = new LinkedList<Train>();
     }
     
     public boolean add(final Train t) {
     	
+    	boolean addSuccessful = true;
+    	
     	for (Train train : runningList) {
     		if (conflict(t, train)) {
-    			return false;
+    			addSuccessful = false;
+    			break;
     		}
     	}
     	
     	runningList.add(t);
-    	return true;
+    	t.running();
+    	return addSuccessful;
     }
-    
+
     public boolean conflict(final Train trainOne, final Train trainTwo) {
-    	LinkedList<Station> routeOne = trainOne.getRoute();
-    	LinkedList<Station> routeTwo = trainTwo.getRoute();
+    	LinkedList<Edge> routeOne = trainOne.getRoute();
+    	LinkedList<Edge> routeTwo = trainTwo.getRoute();
     	
-    	if (routeOne.size() != routeTwo.size()) {
-    		return false;
-    	}
-    	
-    	for (int i = 0; i < routeOne.size(); i++) {
-    		if ((routeOne.get(i).getName().equals(routeTwo.get(i).getName()) &&
-    		        (routeOne.get(i).getDistance() == routeTwo.get(i).getDistance()))) {
-    			return true;
-    		}
-    	}
-    	
-    	return false;
+    	boolean conflict = false;
+
+		for (Edge edgeOne : routeOne) {
+			for (Edge edgeTwo : routeTwo) {
+				if (edgeOne.equals(edgeTwo)) {
+					conflict = true;
+					System.out.println("conflit between train " + trainOne.getID() + " and " + trainTwo.getID() + " at " + edgeOne.toString());
+				}
+			}
+		}
+    	return conflict;
     }
     
     public void updateTrains(final int time) {
@@ -49,26 +51,22 @@ public class Schedule {
     		
     		train.move();
     		
-    		LinkedList<Station> route = train.getRoute();
-    		
-    		for (int i = 0 ; i < route.size(); i++) {
-    			if (train.getDistanceTraveled() == route.get(i).getDistance()) {
-    				train.setCurrentStation(route.get(i).getName());
-    			}
-    		}
-    	}
-    	
-    	checkArrivals(time);
-    }
-    
-    public void checkArrivals(final int time) {
-    	for (Train train : runningList) {
-    		if (train.getDestName().equals(train.getCurrentStation())) {
-    			train.park();
+    		if (train.getLastStation().equals(train.getDestName())) {
+       			train.park();
     			train.setArrived(true);
     			train.setActualArrivalTime(time);
     			runningList.remove(train);
+    			System.out.println( "train " + train.getID() + " has arrived at " + train.getActualArrivalTime() + " expected arrival was at " + train.getExpectedArrivalTime());
+    			System.out.println("train " + train.getID() + " took route " + train.getRoute().toString() + "\r");
     		}
-    	}
+    	}    	
     }
+    
+    public LinkedList<Train> getRunningList() {
+		return runningList;
+	}
+
+	public void setRunningList(LinkedList<Train> runningList) {
+		this.runningList = runningList;
+	}
 }
