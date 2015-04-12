@@ -15,23 +15,21 @@ public class BaseCase {
     	graph = g;
     	this.sequence = sequence;
     	runningTrains = new Schedule();
+    	generateRoutes();
     }
  
     public void update() {
     	
     	for (Train train : sequence) {
-    		if ((!train.hasArrived()) && (train.getDepatureTime() <= ticks)) {
-    			if (!train.isMoving()) {
-    				if (runningTrains.add(train)) {
-    					numTrainsRunning++;
-    				}
-    				
+    		if ((!train.hasArrived()) && (train.getDepatureTime() <= ticks) && (!train.isMoving())) {
+    			if (runningTrains.add(train)) {
+    				System.out.println( "train " + train.getID() + " has departed at " + ticks + " expected depature time was at " + train.getDepatureTime() + "\r");
+    				numTrainsRunning++;
     			}
     		}
     	}
     	
     	runningTrains.updateTrains(ticks);
-    	
     	ticks++;
     }
     
@@ -58,7 +56,7 @@ public class BaseCase {
     	}
     	
     	for (Train t : sequence) {
-    		delaySum += t.getActualArrivalTime() - t.getExpectedArrivalTime();
+    		delaySum += t.getDelay();
     	}
     	
     	return true;
