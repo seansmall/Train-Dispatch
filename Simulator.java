@@ -13,11 +13,11 @@ public class Simulator {
 
 		BaseCase base = new BaseCase(graph, sequence);
 		
-		//while (!base.sequenceComplete()) {
-		//	base.update();
-		//}
+		while (!base.sequenceComplete()) {
+			base.update();
+		}
 		
-		//System.out.println(base.getDelaySum());
+		System.out.println(base.getDelaySum());
 		
 	}
     
