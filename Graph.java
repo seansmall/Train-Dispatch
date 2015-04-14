@@ -121,16 +121,17 @@ public class Graph {
 					boolean add = set.add(two);
 					// backup if two stations have the same distance one will not be added, if that happens
 					// increase the distance by one and add it, then re set to the actual distance
-					if (!add) {
+					int i = 1;
+					while (!add) {
 						//System.out.println(two.getID() + " " + two.getDistance());
 						
-						two.setDistance(altDist + 1);
-						boolean addBackup = set.add(two);
+						two.setDistance(altDist + i);
+						add = set.add(two);
 						two.setDistance(altDist);
-						
-						if (!addBackup) {
-							System.out.println(two.getID() + " " + two.getDistance());
-						}
+						i++;
+						//if (!addBackup) {
+						//	System.out.println(two.getID() + " " + two.getDistance());
+						//}
 					}
 				}
 			}
@@ -157,6 +158,15 @@ public class Graph {
 		}
 		return s;
 	}
+	
+	   public String toAdjString() {
+	        String s = "";
+	        
+	        for (Map.Entry<String, Vertex> e : graph.entrySet()) {
+	            s = s + e.getValue().toAdjString() + "\r";
+	        }
+	        return s;
+	    }
 	
 	public String getTree() {
 		String s = "";
@@ -240,7 +250,7 @@ public class Graph {
 		test.dijkstra("Boston");
 		// TODO Los Angeles is not being added back into the set during Dijkstra's
 		//System.out.println(test.getPath("Los Angeles"));
-		
+		System.out.println(test.toAdjString());
 		System.out.println("Done");
 
 	}
