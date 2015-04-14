@@ -38,10 +38,18 @@ public class Vertex implements Comparable<Vertex> {
 		return Integer.compare(distance, vertex.getDistance());
 	}
 
-	@Override
+		@Override
 	public String toString() {
 		// assign this vertex id and distance to the return string s
-		String s = this.ID + "," + this.distance + "\r";
+		String s = this.ID + "," + 0 + "\r";
+
+		// return s
+		return s;
+	}
+	
+	public String toAdjString() {
+		// assign this vertex id and distance to the return string s
+		String s = this.ID + "," + 0 + "\r";
 		
 		// add all of the adjacent vertices and their distances to the return string s
 		for (Map.Entry<Vertex, Integer> e : adj.entrySet()) {
