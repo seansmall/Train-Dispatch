@@ -29,6 +29,10 @@ public class Schedule {
         }
         return addSuccessful;
     }
+    
+    public boolean remove(Train t) {
+        return runningList.remove(t);
+    }
 
     public boolean conflict(final Train trainOne, final Train trainTwo) {
         LinkedList<Edge> routeOne = trainOne.getRoute();
@@ -55,11 +59,10 @@ public class Schedule {
                 train.park();
                 train.setArrived(true);
                 train.setActualArrivalTime(time + 1);
-                runningList.remove(train);
                 System.out.println( "train " + train.getID() + " has arrived at " + train.getActualArrivalTime() + " expected arrival was at " + train.getExpectedArrivalTime());
                 System.out.println("train " + train.getID() + " took route " + train.getRoute().toString() + "\r");
             }
-        }       
+        } 
     }
     
     public LinkedList<Train> getRunningList() {
