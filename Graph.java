@@ -82,7 +82,7 @@ public class Graph {
 			}
 			// add each vertex to the set
 			set.add(vertex);
-		}
+		}	
 		// call the next Dijkstra method on with the new set
 		dijkstra(set);
 	}
@@ -110,13 +110,28 @@ public class Graph {
 				// if the alternate distance is less than the current distance between vertex two
 				// and the starting vertex remove two from the set, change the distance to the new alternate distance,
 				// set it's previous field to vertex one, and re-add it to the set
+				
 				if (altDist < two.getDistance()) {
+					
 					set.remove(two);
+					
 					two.setDistance(altDist);
 					two.setPrev(one);
-					set.add(two);
-					//TODO bug where rarely a vertex will not be re-added to the set i am not sure why
-					// still working on it
+					
+					boolean add = set.add(two);
+					// backup if two stations have the same distance one will not be added, if that happens
+					// increase the distance by one and add it, then re set to the actual distance
+					if (!add) {
+						//System.out.println(two.getID() + " " + two.getDistance());
+						
+						two.setDistance(altDist + 1);
+						boolean addBackup = set.add(two);
+						two.setDistance(altDist);
+						
+						if (!addBackup) {
+							System.out.println(two.getID() + " " + two.getDistance());
+						}
+					}
 				}
 			}
 		}
@@ -224,7 +239,7 @@ public class Graph {
 		
 		test.dijkstra("Boston");
 		// TODO Los Angeles is not being added back into the set during Dijkstra's
-		System.out.println(test.getPath("Los Angeles"));
+		//System.out.println(test.getPath("Los Angeles"));
 		
 		System.out.println("Done");
 
