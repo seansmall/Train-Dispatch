@@ -11,8 +11,14 @@ public class SequenceGenerator {
 	private static final Random RNG =
             new Random (Long.getLong ("seed", System.nanoTime()));
 	
-	public static final int LENGTH = 10; // length of sequence
-	public static final int DAY = 72000; // arbitrary time
+	public static final int LENGTH = 500; // length of sequence (number of trains)
+	public static final int DAY = 720; // arbitrary time
+	
+	private static final String source = String.format("%-20.20s", "Source:");
+	private static final String destination = String.format("%-20.20s", "Destination:");
+	private static final String depTime = String.format("%-20.20s", "Dep. Time:");
+	private static final String HEADER = source + destination + depTime;
+	private static final String UNDERLINE = "——————————————————————————————————————————————————";
 	
 	public static final String[] AMTRAK_STATIONS = {"Miami", "West Palm Beach", "Orlando", "Jacksonville", "Tallahassee",
 		"Pensacola", "Mobile", "New Orleans", "Lafayette", "Houston", "San Antonio", "El Paso", "Tucson",
@@ -57,6 +63,9 @@ public class SequenceGenerator {
 			s = AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)];
 			d = AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)];
 			dt = 1 + RNG.nextInt(DAY);
+			while (s.equals(d)) {
+				d = AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)];
+			}
 			
 			Sequence element = new Sequence(s, d, dt);
 			sequence.add(element);
@@ -72,6 +81,9 @@ public class SequenceGenerator {
 			s = EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)];
 			d = EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)];
 			dt = 1 + RNG.nextInt(DAY);
+			while (s.equals(d)) {
+				d = EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)];
+			}
 			
 			Sequence element = new Sequence(s, d, dt);
 			sequence.add(element);
@@ -99,51 +111,47 @@ public class SequenceGenerator {
 	}
 	
 	public static void saveToTxt (ArrayList<Sequence> sequence,
-			String fileName, String dirName) throws FileNotFoundException,
-			UnsupportedEncodingException {
+			String fileName) throws FileNotFoundException,
+			UnsupportedEncodingException {		
 		
-		final String source = String.format("%-20.17s", "Source:");
-		final String destination = String.format("%-20.17s", "Destination:");
-		final String depTime = String.format("%-20.17s", "Dep. Time:");
-		final String header = source + destination + depTime;
-		final String underline = "——————————————————————————————————————————————————";
-				
-		// checks if directory name already exists
-		if (!new File(dirName).exists()) {
-			new File(dirName).mkdir();
+		// checks if filename already exists
+		// and adds an index if it does
+		File f = new File(fileName + ".txt");
+		String newName;
+		if(f.exists() && !f.isDirectory()) {
+			int count = 1;
+			do {
+				newName = fileName + "(" + count + ")";
+				f = new File(newName + ".txt");
+				count++;
+			} while (f.exists() && !f.isDirectory());
 		}
-		  
-	      File f = new File(dirName + File.separator + fileName + ".txt");
 
-	      if(!f.exists() && !f.isDirectory()) {
-	    	// saves file to directory
-		      PrintWriter writer = new PrintWriter(f, "UTF-8");
-				writer.println(header);
-				writer.println(underline);
-				
-				for (int i = 0; i < sequence.size(); i++) {
-					String s = String.format("%-20.17s", sequence.get(i).source + ",");
-					String d = String.format("%-20.17s", sequence.get(i).destination + ",");
-					String dt = String.format("%10.17s,\n", sequence.get(i).depatureTime);
-					writer.println(s + d + dt);
-				}
-				writer.close();
-	      }
+		// saves file to directory
+		PrintWriter writer = new PrintWriter(f, "UTF-8");
+		writer.println(HEADER);
+		writer.println(UNDERLINE);
+		
+		for (int i = 0; i < sequence.size(); i++) {
+			String s = String.format("%-20.20s", sequence.get(i).source + ",");
+			String d = String.format("%-20.20s", sequence.get(i).destination + ",");
+			String dt = String.format("%10.20s,\n", sequence.get(i).depatureTime);
+			writer.println(s + d + dt);
+		}
+		writer.close();
+		// prints to console
+		System.out.println("Filename: " + f);
 	}
 	
 	public static void printSequence (ArrayList<Sequence> testList) {
-		final String source = String.format("%-20.17s", "Source:");
-		final String destination = String.format("%-20.17s", "Destination:");
-		final String depTime = String.format("%-20.17s", "Dep. Time:");
-		final String header = source + destination + depTime;
-		final String underline = "——————————————————————————————————————————————————";
-		System.out.println(header);
-		System.out.println(underline);
+		
+		System.out.println(HEADER);
+		System.out.println(UNDERLINE);
 		
 		for (int i = 0; i < testList.size(); i++) {
-			String s = String.format("%-20.17s", testList.get(i).source + ",");
-			String d = String.format("%-20.17s", testList.get(i).destination + ",");
-			String dt = String.format("%10.17s,\n", testList.get(i).depatureTime);
+			String s = String.format("%-20.20s", testList.get(i).source + ",");
+			String d = String.format("%-20.20s", testList.get(i).destination + ",");
+			String dt = String.format("%10.20s,\n", testList.get(i).depatureTime);
 			System.out.print(s + d + dt);
 		}
 		System.out.print("\n\n");
@@ -152,18 +160,18 @@ public class SequenceGenerator {
 	public static void main (String[] args) {
 		
 		ArrayList<Sequence> testList = new ArrayList<>();
-		createEuropeSequence(testList);
+		createAmtrakSequence(testList);
 		sortSequence(testList);
 		printSequence(testList);
 		
-//		try {
-//			saveToTxt(testList, "test", "test");
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			saveToTxt(testList, "AmtrakSequence");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
