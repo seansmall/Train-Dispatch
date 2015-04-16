@@ -5,30 +5,38 @@ import java.util.Scanner;
 
 public class Train {
 
-    private String sourceName;
-    private String destName;
-    private int expectedDepartureTime;
-    private int actualDepatureTime;
-    private int ID;
-    private String lastStation;
-	private int expectedArrivalTime;
-    private int actualArrivalTime;
-    private String type;
-    private LinkedList<Edge> route;
-    private boolean moving;
-    private boolean arrived = false;
-    private int distanceTraveled = 0;
-    private int routeDistance;
-    private int speed = 1;
-    
-    
     private static final boolean RUNNING = true;
     private static final boolean PARKED = false;
+	
+    private String sourceName;
+    private String destName;
+    private String delayStop;
+    private String lastStation;
+    private String type;
     
+    private int departureTime;
+    private int ID;
+	private int expectedArrivalTime;
+    private int actualArrivalTime;
+    private int routeDistance;
+    private int speed = 5;
+    private int distanceTraveled = 0;
+    private int delayTime = 0;
+    private int actualDepartureTime;
+    // use delay time with delay stop, the train should wait when
+    // it reaches the delay stop until after the delay time and then
+    // resume its trip
+    
+    private boolean moving;
+    private boolean arrived = false;
+    
+    private LinkedList<Edge> route;
+ 
     public Train (final String source, final String dest, final int time, final int id) {
         this.sourceName = source;
         this.destName = dest;
-        this.expectedDepartureTime = time;
+        this.delayStop =dest;
+        this.departureTime = time;
         this.ID= id;
         moving = PARKED;
         this.route = new LinkedList<Edge>();
@@ -56,7 +64,7 @@ public class Train {
         }
         
         lastStation = route.getFirst().getVertexOne().getID();
-        expectedArrivalTime = route.getLast().getWeight() / speed + expectedDepartureTime;
+        expectedArrivalTime = route.getLast().getWeight() / speed + departureTime;
     }
     
 	public void move() {
@@ -84,7 +92,7 @@ public class Train {
     }
     
     public int getDepatureTime () {
-        return expectedDepartureTime;
+        return departureTime;
     }
     
     public void setType (String t) {
@@ -195,11 +203,27 @@ public class Train {
 		this.lastStation = lastStation;
 	}
 
-	public int getActualDepatureTime() {
-		return actualDepatureTime;
+	public String getDelayStop() {
+		return delayStop;
 	}
 
-	public void setActualDepatureTime(int actualDepatureTime) {
-		this.actualDepatureTime = actualDepatureTime;
+	public void setDelayStop(String delayStop) {
+		this.delayStop = delayStop;
 	}
+
+	public int getDelayTime() {
+		return delayTime;
+	}
+
+	public void setDelayTime(int delayTime) {
+		this.delayTime = delayTime;
+	}
+
+    public int getActualDepartureTime() {
+        return actualDepartureTime;
+    }
+
+    public void setActualDepartureTime(int actualDepartureTime) {
+        this.actualDepartureTime = actualDepartureTime;
+    }
 }
