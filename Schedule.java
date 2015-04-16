@@ -6,7 +6,7 @@ public class Schedule {
     // of new trains before adding them.  Once the train reaches its destination it is
     // removed and marked done.
     
-    private LinkedList<Train> runningList;
+    protected LinkedList<Train> runningList;
 
     public Schedule() {
         runningList = new LinkedList<Train>();
@@ -17,15 +17,17 @@ public class Schedule {
         boolean addSuccessful = true;
         
         for (Train train : runningList) {
-            if (conflict(t, train)) {
-                addSuccessful = false;
-                break;
+            if (!train.hasArrived()) {
+                if (conflict(t, train)) {
+                    addSuccessful = false;
+                    break;
+                }
             }
         }
 
         if (addSuccessful) {
-        	runningList.add(t);
-        	t.running();
+            runningList.add(t);
+            t.running();
         }
         return addSuccessful;
     }
@@ -41,7 +43,7 @@ public class Schedule {
         for (Edge edgeOne : routeOne) {
             for (Edge edgeTwo : routeTwo) {
                 if (edgeOne.equals(edgeTwo)) {
-                    //System.out.println("conflit between train " + trainOne.getID() + " and " + trainTwo.getID() + " at " + edgeOne.toString());
+                    //System.out.println("conflict between train " + trainOne.getID() + " and " + trainTwo.getID() + " at " + edgeOne.toString());
                     return true;
                 }
             }
