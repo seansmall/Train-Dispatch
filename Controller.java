@@ -1,17 +1,17 @@
 import java.util.ArrayList;
 
 
-public class BaseCase {
+public class Controller {
 
     private Graph graph;
-    private ArrayList<Train> sequence;
-    private int ticks = 0;
+    protected ArrayList<Train> sequence;
+    protected int ticks = 0;
     private Schedule runningTrains;
-    private int numTrainsRunning = 0;
+    protected int numTrainsRunning = 0;
     private boolean sequenceComplete = false;
     private int delaySum = 0;
     
-    public BaseCase(final Graph g, final ArrayList<Train> sequence) {
+    public Controller(final Graph g, final ArrayList<Train> sequence) {
         graph = g;
         this.sequence = sequence;
         runningTrains = new Schedule();
@@ -32,6 +32,7 @@ public class BaseCase {
                 }
             } else if (train.hasArrived()) {
                 runningTrains.remove(train);
+                numTrainsRunning--;
             }
         }
     }
@@ -41,7 +42,7 @@ public class BaseCase {
             graph.dijkstra(train.getSourceName());
             String path = graph.getPath(train.getDestName());
             if (path.equals("No such vertex")) {
-            	path = graph.getPath(train.getDestName());
+                path = graph.getPath(train.getDestName());
             }
             train.setRoute(path);
             //TODO bug 
