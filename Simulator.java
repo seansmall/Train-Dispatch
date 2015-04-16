@@ -51,6 +51,7 @@ public class Simulator {
 			writer.println(train.getRoute());
 		}
 		writer.close();
+		System.out.println("Train info saved in '" + f + "'");
 	}
     
 	public static ArrayList<Train> readSequence(final File fileName) {
