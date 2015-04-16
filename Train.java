@@ -7,7 +7,8 @@ public class Train {
 
     private String sourceName;
     private String destName;
-    private int departureTime;
+    private int expectedDepartureTime;
+    private int actualDepatureTime;
     private int ID;
     private String lastStation;
 	private int expectedArrivalTime;
@@ -27,7 +28,7 @@ public class Train {
     public Train (final String source, final String dest, final int time, final int id) {
         this.sourceName = source;
         this.destName = dest;
-        this.departureTime = time;
+        this.expectedDepartureTime = time;
         this.ID= id;
         moving = PARKED;
         this.route = new LinkedList<Edge>();
@@ -55,14 +56,14 @@ public class Train {
         }
         
         lastStation = route.getFirst().getVertexOne().getID();
-        expectedArrivalTime = route.getLast().getWeight() * speed + departureTime;
+        expectedArrivalTime = route.getLast().getWeight() / speed + expectedDepartureTime;
     }
     
 	public void move() {
 		distanceTraveled += speed;
 		
 		for (Edge e : route) {
-			if (e.getWeight() == distanceTraveled) {
+			if (e.getWeight() <= distanceTraveled) {
 				lastStation = e.getVertexTwo().getID();
 			} else if (e.getWeight() > distanceTraveled) {
 				break;
@@ -83,7 +84,7 @@ public class Train {
     }
     
     public int getDepatureTime () {
-        return departureTime;
+        return expectedDepartureTime;
     }
     
     public void setType (String t) {
@@ -192,5 +193,13 @@ public class Train {
 
 	public void setLastStation(String lastStation) {
 		this.lastStation = lastStation;
+	}
+
+	public int getActualDepatureTime() {
+		return actualDepatureTime;
+	}
+
+	public void setActualDepatureTime(int actualDepatureTime) {
+		this.actualDepatureTime = actualDepatureTime;
 	}
 }
