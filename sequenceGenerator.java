@@ -2,7 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -11,13 +11,13 @@ public class SequenceGenerator {
 	private static final Random RNG =
             new Random (Long.getLong ("seed", System.nanoTime()));
 	
-	public static final int LENGTH = 500; // length of sequence (number of trains)
+	public static final int LENGTH = 100; // length of sequence (number of trains)
 	public static final int DAY = 720; // arbitrary time
 	
-	private static final String source = String.format("%-20.20s", "Source:");
-	private static final String destination = String.format("%-20.20s", "Destination:");
-	private static final String depTime = String.format("%-20.20s", "Dep. Time:");
-	private static final String HEADER = source + destination + depTime;
+	private static final String SOURCE = String.format("%-20.20s", "Source:");
+	private static final String DESTINATION = String.format("%-20.20s", "Destination:");
+	private static final String DEP_TIME = String.format("%-20.20s", "Dep. Time:");
+	private static final String HEADER = SOURCE + DESTINATION + DEP_TIME;
 	private static final String UNDERLINE = "——————————————————————————————————————————————————";
 	
 	public static final String[] AMTRAK_STATIONS = {"Miami", "West Palm Beach", "Orlando", "Jacksonville", "Tallahassee",
@@ -55,62 +55,84 @@ public class SequenceGenerator {
 	     }
 	}
 	
-	public static ArrayList<Sequence> createAmtrakSequence (ArrayList<Sequence> sequence) {
-		
-		for (int i = 0; i < LENGTH; i++) {
-			String s, d;
-			int dt;
-			s = AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)];
-			d = AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)];
-			dt = 1 + RNG.nextInt(DAY);
-			while (s.equals(d)) {
-				d = AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)];
-			}
-			
-			Sequence element = new Sequence(s, d, dt);
-			sequence.add(element);
+	static class trainSequence implements Comparable<Object>{
+		private String source;
+		private String destination;
+		private int depatureTime;
+
+		public String getSource() {
+			return source;
 		}
-		return sequence;
-	}
-	
-	public static ArrayList<Sequence> createEuropeSequence (ArrayList<Sequence> sequence) {
-		
-		for (int i = 0; i < LENGTH; i++) {
-			String s, d;
-			int dt;
-			s = EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)];
-			d = EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)];
-			dt = 1 + RNG.nextInt(DAY);
-			while (s.equals(d)) {
-				d = EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)];
-			}
-			
-			Sequence element = new Sequence(s, d, dt);
-			sequence.add(element);
+
+		public void setSource(String source) {
+		    this.source = source;
 		}
-		return sequence;
+
+		public String getDestination() {
+		    return destination;
+		}
+
+		public void setDestination(String destination) {
+		    this.destination = destination;
+		}
+
+		public int getDepatureTime() {
+		    return depatureTime;
+		}
+
+		public void setDepatureTime(int depatureTime) {
+			this.depatureTime = depatureTime;
+		}
+
+		public int compareTo(Object anotherTrain) throws ClassCastException {
+			if (!(anotherTrain instanceof trainSequence))
+				throw new ClassCastException("A trainSequence object expected.");
+			int anotherTrainDepTime = ((trainSequence) anotherTrain).getDepatureTime();  
+			return this.depatureTime - anotherTrainDepTime;    
+		}
 	}
 	
-	public static ArrayList<Sequence> sortSequence (ArrayList<Sequence> sequence) {
+	public static void createAmtrakSequence(trainSequence[] sequence) {
+
+	  	for (int i = 0; i < LENGTH; i++) {
+	  		sequence[i] = new trainSequence();
+	  		sequence[i].setSource(AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)]);
+		  	sequence[i].setDestination(AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)]);
+		  	sequence[i].setDepatureTime(1 + RNG.nextInt(DAY));
+			while (sequence[i].getSource().equals(sequence[i].getDestination())) {
+				sequence[i].setDestination(AMTRAK_STATIONS[RNG.nextInt(AMTRAK_STATIONS.length)]);
+			}
+		}
+	}
+	
+	public static void createEuropeSequence(trainSequence[] sequence) {
+
+	  	for (int i = 0; i < LENGTH; i++) {
+	  		sequence[i] = new trainSequence();
+	  		sequence[i].setSource(EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)]);
+		  	sequence[i].setDestination(EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)]);
+		  	sequence[i].setDepatureTime(1 + RNG.nextInt(DAY));
+			while (sequence[i].getSource().equals(sequence[i].getDestination())) {
+				sequence[i].setDestination(EUROPE_STATIONS[RNG.nextInt(EUROPE_STATIONS.length)]);
+			}
+		}
+	}
+	
+	public static void printTrainSequence (trainSequence[] sequence) {
 			
-			// sorts the sequence
-		      for (int i = 0; i < sequence.size(); i++) {
-		            int min = i;
-		            for (int j = i + 1; j < sequence.size(); j++) {
-		                if (sequence.get(j).depatureTime < sequence.get(min).depatureTime) {
-		                    min = j;
-		                }
-		            }
-		            if (min != i) {
-		            	final Sequence temp = sequence.get(i);
-		                sequence.set(i, sequence.get(min));
-		                sequence.set(min, temp);
-		            }
-		        }
-			return sequence;
-	}
+			System.out.println(HEADER);
+			System.out.println(UNDERLINE);
+			
+			for (int i = 0; i < sequence.length; i++) {
+				String s = String.format("%-20.20s", sequence[i].getSource() + ",");
+				String d = String.format("%-20.20s", sequence[i].getDestination() + ",");
+				String dt = String.format("%10.20s,\n", sequence[i].getDepatureTime());
+				System.out.print(s + d + dt);
+			}
+			System.out.print("\n\n");
+		}
 	
-	public static void saveToTxt (ArrayList<Sequence> sequence,
+	public static void saveToTxt (trainSequence[] sequence,
 			String fileName) throws FileNotFoundException,
 			UnsupportedEncodingException {		
 		
@@ -126,16 +148,15 @@ public class SequenceGenerator {
 				count++;
 			} while (f.exists() && !f.isDirectory());
 		}
-
 		// saves file to directory
 		PrintWriter writer = new PrintWriter(f, "UTF-8");
 		writer.println(HEADER);
 		writer.println(UNDERLINE);
 		
-		for (int i = 0; i < sequence.size(); i++) {
-			String s = String.format("%-20.20s", sequence.get(i).source + ",");
-			String d = String.format("%-20.20s", sequence.get(i).destination + ",");
-			String dt = String.format("%10.20s,\n", sequence.get(i).depatureTime);
+		for (int i = 0; i < sequence.length; i++) {
+			String s = String.format("%-20.20s", sequence[i].getSource() + ",");
+			String d = String.format("%-20.20s", sequence[i].getDestination() + ",");
+			String dt = String.format("%10.20s,\n", sequence[i].getDepatureTime());
 			writer.println(s + d + dt);
 		}
 		writer.close();
@@ -143,35 +164,12 @@ public class SequenceGenerator {
 		System.out.println("Filename: " + f);
 	}
 	
-	public static void printSequence (ArrayList<Sequence> testList) {
-		
-		System.out.println(HEADER);
-		System.out.println(UNDERLINE);
-		
-		for (int i = 0; i < testList.size(); i++) {
-			String s = String.format("%-20.20s", testList.get(i).source + ",");
-			String d = String.format("%-20.20s", testList.get(i).destination + ",");
-			String dt = String.format("%10.20s,\n", testList.get(i).depatureTime);
-			System.out.print(s + d + dt);
-		}
-		System.out.print("\n\n");
-	}
-	
-	public static void main (String[] args) {
-		
-		ArrayList<Sequence> testList = new ArrayList<>();
-		createAmtrakSequence(testList);
-		sortSequence(testList);
-		printSequence(testList);
-		
-		try {
-			saveToTxt(testList, "AmtrakSequence");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void main (String[] args) throws FileNotFoundException, UnsupportedEncodingException {
+
+		trainSequence[] list = new trainSequence[LENGTH];
+		createAmtrakSequence(list);
+	    Arrays.sort(list);
+	    printTrainSequence(list);
+	    saveToTxt(list, "sequence");
 	}
 }
