@@ -21,4 +21,19 @@ public class Coordinates {
    public void setY(double a) {
        y = a;
    }
+   
+   public Coordinates subtract (Coordinates a) {
+       return new Coordinates(x - a.getX(), y - a.getY());
+   }
+   
+   public void divide (double t) {
+       x = x/t;
+       y = y/t;
+   }
+   
+   public void add (Coordinates a) {
+       x += a.getX();
+       y += a.getY();
+   }
 }
+
