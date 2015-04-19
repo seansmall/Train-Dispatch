@@ -52,7 +52,7 @@ public class Simulator {
 		for (Train train : sequence) {
 			String s = String.format("%-5.5s", train.getID() + ",");
 			String d = String.format("%-1.3s", train.getSpeed() + ",");
-			String dt = String.format("%7.7s", train.getActualDepatureTime());
+			String dt = String.format("%7.7s, ", train.getActualDepatureTime());
 			writer.print(s + d + dt);
 			writer.println(train.getRoute());
 		}
