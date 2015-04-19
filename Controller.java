@@ -29,6 +29,7 @@ public class Controller {
                 if (runningTrains.add(train)) {
                     System.out.println( "train " + train.getID() + " has departed at " + ticks + " expected depature time was at " + train.getDepatureTime() + "\r");
                     numTrainsRunning++;
+                    train.setActualDepartureTime(ticks);
                 }
             } else if (train.hasArrived()) {
                 runningTrains.remove(train);
