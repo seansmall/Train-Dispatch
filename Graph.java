@@ -127,12 +127,12 @@ public class Graph {
 						
 						two.setDistance(altDist + i);
 						add = set.add(two);
-						two.setDistance(altDist);
 						i++;
 						//if (!addBackup) {
 						//	System.out.println(two.getID() + " " + two.getDistance());
 						//}
 					}
+					two.setDistance(altDist);
 				}
 			}
 		}
