@@ -1,0 +1,155 @@
+London, Ebbsfleet Int., 40,
+
+Ebbsfleet Int., Lille, 244,
+
+Lille, Brussels, 111,
+
+Lille, Paris, 221,
+
+Brussels, Liege, 97,
+
+Brussels, Antwerpen, 44,
+
+Antwerpen, Rotterdam, 99,
+
+Rotterdam, Schipol airport, 58,
+
+Schipol airport, Amsterdam, 22,
+
+Amsterdam, Duisberg, 202,
+
+Duisberg, Essen, 25,
+
+Duisberg, Koln, 71,
+
+Koln, Liege, 123,
+
+Koln, Frankfurt airport, 178,
+
+Essen, Dortmund, 38,
+
+Dortmund, Hannover, 213,
+
+Hannover, Hamburg, 151,
+
+Hannover, Fulda, 262,
+
+Hannover, Berlin, 285,
+
+Berlin, Leipzig, 190,
+
+Leipzig, Nurnberg, 282,
+
+Nurnberg, Wurzburg, 109,
+
+Wurzburg, Frankfurt, 118,
+
+Frankfurt, Fulda, 104,
+
+Frankfurt, Frankfurt airport, 12,
+
+Frankfurt, Mannheim, 80,
+
+Frankfurt airport, Mannheim, 71,
+
+Mannheim, Nancy, 250,
+
+Nancy, Metz, 56,
+
+Metz, Luxembourg City, 63,
+
+Nancy, Reims, 196,
+
+Reims, Marne-La-Vallee, 128,
+
+Marne-La-Vallee, Paris, 24,
+
+Paris, Massy, 23,
+
+Massy, Le Mans, 188,
+
+Le Mans, Rennes, 159,
+
+Le Mans, Angers, 97,
+
+Angers, Nantes, 92,
+
+Massy, Tours, 219,
+
+Tours, Poitiers, 104,
+
+Poitiers, Angouleme, 114,
+
+Angouleme, Bordeaux, 119,
+
+Paris, Dijon, 315,
+
+Dijon, Lyon, 195,
+
+Lyon, Geneve, 148,
+
+Lyon, Valence, 102,
+
+Valence, Avignon, 128,
+
+Avignon, Aix-en-Provence, 89,
+
+Aix-en-Provence, Marseille, 32,
+
+Avignon, Nimes, 45,
+
+Nimes, Montpellier, 58,
+
+Montpellier, Perpignan, 157,
+
+Lyon, Chambery, 107,
+
+Chambery, Torino, 208,
+
+Torino, Milano, 140,
+
+Dijon, Mulhouse, 220,
+
+Mulhouse, Strasbourg, 114,
+
+Strasbourg, Nancy, 159,
+
+Strasbourg, Karlsruhe, 85,
+
+Karlsruhe, Stuttgart, 76,
+
+Stuttgart, Zurich, 218,
+
+Stuttgart, Munchen, 222,
+
+Munchen, Saltzburg, 144,
+
+Dijon, Lausanne, 202,
+
+Dijon, Bern, 253,
+
+Bern, Interlake, 57,
+
+Bern, Basel, 98,
+
+Basel, Mulhouse, 38,
+
+Basel, Karlsruhe, 192,
+
+Basel, Zurich, 85,
+
+Zürich, Innsbruck, 290,
+
+Zürich, Munchen, 310,
+
+Innsbruck, Saltzburg, 186,
+
+Saltzburg, Linz, 132,
+
+Linz, Wien, 184,
+
+Linz, Nurnberg, 339,
+
+Nurnberg, Munchen, 170,
+
+Karlsruhe, Mannheim, 70,
