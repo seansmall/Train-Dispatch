@@ -31,6 +31,8 @@ public class Train {
     private boolean arrived = false;
     
     private LinkedList<Edge> route;
+    private Coordinates coordinate;
+    private Edge currentEdge;
  
     public Train (final String source, final String dest, final int time, final int id) {
         this.sourceName = source;
@@ -52,6 +54,7 @@ public class Train {
     	
         while (SC.hasNext()) {
             names.add(SC.next());
+            //sSystem.out.println(names.toString());
             distances.add(SC.nextInt());
         }
         SC.close();
@@ -63,6 +66,15 @@ public class Train {
         	route.add(new Edge(one, two, distanceTo));
         }
         
+        lastStation = route.getFirst().getVertexOne().getID();
+        expectedArrivalTime = route.getLast().getWeight() / speed + departureTime;
+    }
+  
+    public void setRoute (LinkedList<Edge> edges) {
+        route.clear();
+        for (int i = 0; i < edges.size(); i++) {
+            route.add(new Edge(edges.get(i).getVertexOne(), edges.get(i).getVertexTwo(), edges.get(i).getWeight()));
+        }
         lastStation = route.getFirst().getVertexOne().getID();
         expectedArrivalTime = route.getLast().getWeight() / speed + departureTime;
     }
@@ -79,6 +91,21 @@ public class Train {
 		}
 	}
     
+	public Coordinates getCoordinates() {
+	    return coordinate;
+	}
+
+	public void setCoordinates(Coordinates a) {
+        coordinate = new Coordinates(a.getX(), a.getY());
+    }
+
+	public Edge getCurrentEdge () {
+	    return currentEdge;
+	}
+	
+	public void setCurrentEdge (Edge a) {
+	    currentEdge = new Edge(a.getVertexOne(),a.getVertexTwo(),a.getWeight());
+	}
 	public void park() {
 		this.moving = PARKED;
 	}
