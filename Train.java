@@ -1,5 +1,7 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.Scanner;
 
 
@@ -33,6 +35,7 @@ public class Train {
     private LinkedList<Edge> route;
     private Coordinates coordinate;
     private Edge currentEdge;
+    private Color color;
  
     public Train (final String source, final String dest, final int time, final int id) {
         this.sourceName = source;
@@ -252,5 +255,14 @@ public class Train {
 
     public void setActualDepartureTime(int actualDepartureTime) {
         this.actualDepartureTime = actualDepartureTime;
+    }
+    
+    public void setRandomColor () {
+        Random rng = new Random();
+        color = new Color(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+    }
+    
+    public Color getColor () {
+        return new Color(color.getRGB());
     }
 }
