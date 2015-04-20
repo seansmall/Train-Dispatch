@@ -113,7 +113,36 @@ public class Simulator {
         }
         return seq;
     }
-    
+
+    public static void saveTrainInfo (ArrayList<Train> sequence,
+            String fileName) throws FileNotFoundException,
+            UnsupportedEncodingException {      
+        
+        // checks if filename already exists
+        // and adds an index if it does
+        File f = new File(fileName + ".txt");
+        String newName;
+        if(f.exists() && !f.isDirectory()) {
+            int count = 1;
+            do {
+                newName = fileName + "(" + count + ")";
+                f = new File(newName + ".txt");
+                count++;
+            } while (f.exists() && !f.isDirectory());
+        }
+        // saves file to directory
+        PrintWriter writer = new PrintWriter(f, "UTF-8");
+        
+        for (Train train : sequence) {
+            String s = String.format("%-5.5s", train.getID() + ",");
+            String d = String.format("%-1.3s", train.getSpeed() + ",");
+            String dt = String.format("%7.7s,", train.getActualDepartureTime());
+            writer.print(s + d + dt);
+            writer.println(train.getRoute());
+        }
+        writer.close();
+    }
+
     public static void sequenceFactory(final String map, final int numTrains, final int ticksPerDay, final int percentCargo,
     		final int percentPassenger, final int percentPriority, final int numSequences) throws FileNotFoundException, UnsupportedEncodingException {
     	
