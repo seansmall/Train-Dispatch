@@ -7,46 +7,59 @@ import java.util.Scanner;
 
 public class Train {
 
-    private static final boolean RUNNING = true;
-    private static final boolean PARKED = false;
+    private static final boolean RUNNING = true;				// constant value used to show that the train is currently moving
+    private static final boolean PARKED = false;				// constant value used to show that the train is currently parked at a station
 	
-    private String sourceName;
-    private String destName;
-    private String delayStop;
-    private String lastStation;
-    private String type;
+    private String sourceName;									// the name of the station where this train originates
+    private String destName;									// the name of this trains destination
+    private String delayStop;									// the name of the next station that the train must delay at if a delay is necessary
+    private String lastStation;									// the last station this train passed on its route
     
-    private int departureTime;
-    private int ID;
-	private int expectedArrivalTime;
-    private int actualArrivalTime;
-    private int routeDistance;
-    private int speed = 5;
-    private int distanceTraveled = 0;
-    private int delayTime = 0;
-    private int actualDepartureTime;
-    // use delay time with delay stop, the train should wait when
-    // it reaches the delay stop until after the delay time and then
-    // resume its trip
+    private Type type;											// this trains type, passenger, cargo, or priority
     
-    private boolean moving;
-    private boolean arrived = false;
+    private int expextedDepartureTime;							// this trains scheduled departure time
+    private int actualDepartureTime;							// the time this train actually left is source station
+    private int ID;												// this trains unique id
+	private int expectedArrivalTime;							// the time this train is scheduled to arrive at its destination
+    private int actualArrivalTime;								// the time this train actually arrived at its destination
+    private int speed = 1;										// this trains speed per tick
+    private int distanceTraveled = 0;							// the current distance this train has traveled
+    private int delayTime = 0;									// if this train must delay at a station it will delay until this time
+    private int waitLimit = 2;									// max number of time the train can be made to wait in favor of a higher priority train
+    private int waitCount = 0;									// number of times this train has been made to delay in favor of a higher priority train
     
-    private LinkedList<Edge> route;
-    private Coordinates coordinate;
-    private Edge currentEdge;
+    private boolean moving;										// if this train is moving or parked
+    private boolean arrived = false;							// if this train has arrived at its destination or not
+    
+    private LinkedList<Edge> route;								// this trains route
+    
     private Color color;
+    
+    public enum Type {
+    	cargo,
+    	passenger,
+    	priority
+    };
  
-    public Train (final String source, final String dest, final int time, final int id) {
+    public Train (final String source, final String dest, final int time, final int id, final int type) {
         this.sourceName = source;
         this.destName = dest;
         this.delayStop =dest;
-        this.departureTime = time;
+        this.expextedDepartureTime = time;
         this.ID= id;
         moving = PARKED;
         this.route = new LinkedList<Edge>();
+        
+        if (type == 0) {
+        	this.type = Type.cargo;
+        } else if (type == 1) {
+        	this.type = Type.passenger;
+        } else if (type == 2){
+        	this.type = Type.priority;
+        }
     }
-    
+    // this method takes a string of station names and distances to make the
+    // route this train will take 
     public void setRoute(final String routeString){
     	
     	final Scanner SC = new Scanner(routeString);
@@ -54,37 +67,36 @@ public class Train {
     	
     	ArrayList<Integer> distances = new ArrayList<Integer>();
     	ArrayList<String> names = new ArrayList<String>();
-    	
+    	//System.out.println(routeString);
         while (SC.hasNext()) {
-            names.add(SC.next());
-            //sSystem.out.println(names.toString());
-            distances.add(SC.nextInt());
+        	String name = SC.next();
+            int dist = SC.nextInt();
+            //System.out.println(name + ", " + dist);
+        	names.add(name);
+            distances.add(dist);
         }
         SC.close();
         
         for (int i = 0; i < names.size() - 1; i++) {
+        	// the two stations on either end of this track segment
         	Vertex one = new Vertex(names.get(i));
         	Vertex two = new Vertex(names.get(i + 1));
+        	// the distance from the source station to the end of this
+        	// track segment
         	int distanceTo = distances.get(i + 1);
+        	// each segment of the route is one edge
         	route.add(new Edge(one, two, distanceTo));
         }
-        
+        // set initial last station to the first station on the route
         lastStation = route.getFirst().getVertexOne().getID();
-        expectedArrivalTime = route.getLast().getWeight() / speed + departureTime;
-    }
-  
-    public void setRoute (LinkedList<Edge> edges) {
-        route.clear();
-        for (int i = 0; i < edges.size(); i++) {
-            route.add(new Edge(edges.get(i).getVertexOne(), edges.get(i).getVertexTwo(), edges.get(i).getWeight()));
-        }
-        lastStation = route.getFirst().getVertexOne().getID();
-        expectedArrivalTime = route.getLast().getWeight() / speed + departureTime;
+        // calculate the expected arrival time
+        expectedArrivalTime = route.getLast().getWeight() / speed + expextedDepartureTime;
     }
     
 	public void move() {
+		// increase the distance traveled by the speed per tick
 		distanceTraveled += speed;
-		
+		// check if the train passed a new station and update last station if needed
 		for (Edge e : route) {
 			if (e.getWeight() <= distanceTraveled) {
 				lastStation = e.getVertexTwo().getID();
@@ -93,22 +105,23 @@ public class Train {
 			}
 		}
 	}
-    
-	public Coordinates getCoordinates() {
-	    return coordinate;
-	}
-
-	public void setCoordinates(Coordinates a) {
-        coordinate = new Coordinates(a.getX(), a.getY());
-    }
-
-	public Edge getCurrentEdge () {
-	    return currentEdge;
-	}
 	
-	public void setCurrentEdge (Edge a) {
-	    currentEdge = new Edge(a.getVertexOne(),a.getVertexTwo(),a.getWeight());
-	}
+	// calculate the delay by the difference between the expected arrival time and the actual arrival time
+    public int getDelay () {
+        return actualArrivalTime - expectedArrivalTime;
+    }
+	
+    public void setRandomColor () {
+        Random rng = new Random();
+        color = new Color(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+    }
+            
+    public Color getColor () {
+        return new Color(color.getRGB());
+    }
+    
+    ////////////////////////  GET / SET methods    /////////////////////////
+	
 	public void park() {
 		this.moving = PARKED;
 	}
@@ -117,19 +130,15 @@ public class Train {
 		this.moving = RUNNING;
 	}
 
-    public int getDelay () {
-        return actualArrivalTime - expectedArrivalTime;
-    }
-    
     public int getDepatureTime () {
-        return departureTime;
+        return expextedDepartureTime;
     }
     
-    public void setType (String t) {
+    public void setType (Type t) {
         type = t;
     }
     
-    public String getType() {
+    public Type getType() {
         return type;
     }
     
@@ -216,14 +225,6 @@ public class Train {
 	public void setDestName(String destName) {
 		this.destName = destName;
 	}
-
-	public int getRouteDistance() {
-		return routeDistance;
-	}
-
-	public void setRouteDistance(int routeDistance) {
-		this.routeDistance = routeDistance;
-	}
 	
     public String getLastStation() {
 		return lastStation;
@@ -256,13 +257,20 @@ public class Train {
     public void setActualDepartureTime(int actualDepartureTime) {
         this.actualDepartureTime = actualDepartureTime;
     }
-    
-    public void setRandomColor () {
-        Random rng = new Random();
-        color = new Color(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
-    }
-    
-    public Color getColor () {
-        return new Color(color.getRGB());
-    }
+
+	public boolean isParked() {
+		return !moving;
+	}
+	public int getWaitLimit() {
+		return waitLimit;
+	}
+	public void setWaitLimit(int waitLimit) {
+		this.waitLimit = waitLimit;
+	}
+	public int getWaitCount() {
+		return waitCount;
+	}
+	public void setWaitCount(int waitCount) {
+		this.waitCount = waitCount;
+	}
 }
