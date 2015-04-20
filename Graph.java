@@ -10,8 +10,7 @@ import java.util.TreeSet;
 
 public class Graph {
 
-	// the graph
-	private final Map<String, Vertex> graph;
+	private final Map<String, Vertex> graph;           // 
 	
 	public Graph(final LinkedList<Edge> edges) {
 		// create a new hash map of size equal to the number of edges
@@ -124,15 +123,11 @@ public class Graph {
 					int i = 1;
 					while (!add) {
 						//System.out.println(two.getID() + " " + two.getDistance());
-						
 						two.setDistance(altDist + i);
 						add = set.add(two);
+						two.setDistance(altDist);
 						i++;
-						//if (!addBackup) {
-						//	System.out.println(two.getID() + " " + two.getDistance());
-						//}
 					}
-					two.setDistance(altDist);
 				}
 			}
 		}
@@ -158,15 +153,6 @@ public class Graph {
 		}
 		return s;
 	}
-	
-	   public String toAdjString() {
-	        String s = "";
-	        
-	        for (Map.Entry<String, Vertex> e : graph.entrySet()) {
-	            s = s + e.getValue().toAdjString() + "\r";
-	        }
-	        return s;
-	    }
 	
 	public String getTree() {
 		String s = "";
@@ -245,12 +231,12 @@ public class Graph {
     
 	public static void main (final String[] args) throws FileNotFoundException {
 		
-		Graph test = new Graph("Amtrak System Data.txt");
+		Graph test = new Graph("Europe Map Data.txt");
 		
-		test.dijkstra("Boston");
+		test.dijkstra("Berlin");
 		// TODO Los Angeles is not being added back into the set during Dijkstra's
-		//System.out.println(test.getPath("Los Angeles"));
-		System.out.println(test.toAdjString());
+		System.out.println(test.getPath("London"));
+		
 		System.out.println("Done");
 
 	}
