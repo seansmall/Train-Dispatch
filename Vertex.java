@@ -4,9 +4,9 @@ import java.util.Map;
 
 public class Vertex implements Comparable<Vertex> {
 
-	private final String ID;						// the unique ID (name) of this vertex
-	private Vertex prev;							// used when making spanning trees, it is the vertex directly previous to this one
-	private int distance = Integer.MAX_VALUE;				// the distance between this vertex and the previous one, calculated in the graph class
+	private final String ID;						                // the unique ID (name) of this vertex
+	private Vertex prev;							                // used when making spanning trees, it is the vertex directly previous to this one
+	private int distance = Integer.MAX_VALUE;				        // the distance between this vertex and the previous one, calculated in the graph class
 	private final Map<Vertex, Integer> adj = new HashMap<>();		// the adjacency list of all vertices directly connected to this vertex
 	
 	public Vertex(final String id) {
@@ -38,10 +38,10 @@ public class Vertex implements Comparable<Vertex> {
 		return Integer.compare(distance, vertex.getDistance());
 	}
 
-		@Override
+	@Override
 	public String toString() {
 		// assign this vertex id and distance to the return string s
-		String s = this.ID + "," + 0 + "\r";
+		String s = this.ID + "," + this.distance + "\r";
 
 		// return s
 		return s;
@@ -49,7 +49,7 @@ public class Vertex implements Comparable<Vertex> {
 	
 	public String toAdjString() {
 		// assign this vertex id and distance to the return string s
-		String s = this.ID + "," + 0 + "\r";
+		String s = this.ID + "," + this.distance + "\r";
 		
 		// add all of the adjacent vertices and their distances to the return string s
 		for (Map.Entry<Vertex, Integer> e : adj.entrySet()) {
@@ -60,6 +60,7 @@ public class Vertex implements Comparable<Vertex> {
 	}
 	
 	public boolean equals(Vertex v) {
+	    // if two vertices have the same ID then they are equal
 		return (v.getID().equals(ID));
 	}
 	
