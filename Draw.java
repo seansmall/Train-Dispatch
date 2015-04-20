@@ -196,13 +196,14 @@ public class Draw {
     }
 
     public static void drawTrain (Train a) {
-        StdDraw.setPenRadius(.01);
-        
-        StdDraw.setPenColor(StdDraw.CYAN);
-        StdDraw.filledRectangle(a.getCoordinates().getX(), a.getCoordinates().getY(), 20, 9);
+        StdDraw.setPenRadius(.01);        
+        StdDraw.setPenColor(a.getColor());
+       // int[] x = new int[4]; int[] y = new int[4];
+        //x[0] = 
+        StdDraw.filledRectangle(a.getCoordinates().getX(), a.getCoordinates().getY(), 20, 10);
         StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.text(a.getCoordinates().getX(), a.getCoordinates().getY(), Integer.toString(a.getID()));
-        
+        StdDraw.text(a.getCoordinates().getX(), a.getCoordinates().getY(), Integer.toString(a.getID()), 45);
+
     }
     
     public static void readSchedule (String filename) throws IOException {
@@ -244,7 +245,7 @@ public class Draw {
             trains.get(i).setSpeed(speed);
             trains.get(i).setRoute(edges);
             trains.get(i).setCurrentEdge(edges.get(0));
-            
+            trains.get(i).setRandomColor();
             trains.get(i).setCoordinates(stations.get(City.indexOf(edges.get(0).getVertexOne().getID())));
             stdinput1.close();
             i++;
@@ -295,7 +296,6 @@ public class Draw {
     
     public static void drawCurrent (Coordinates start, Coordinates end) {
         StdDraw.setPenRadius(.01);
-        StdDraw.setPenColor(StdDraw.RED);
         StdDraw.line(start.getX(), start.getY(),
                     end.getX(), end.getY());
         StdDraw.setPenRadius(.003);
@@ -313,15 +313,18 @@ public class Draw {
             for (int i = 0; i < trains.size(); i++) {
                 if (trains.get(i).getDepatureTime() == ticks) {
                     active.add(trains.get(i));
+                    trains.remove(i);
+                    i--;
                 }
             }
             for (int i = 0; i < active.size(); i++) {
-             if (!active.get(i).getRoute().isEmpty()) {
+                
+                 move(active.get(i));
                  for (int j = 0; j < active.get(i).getRoute().size(); j++) {
+                     StdDraw.setPenColor(active.get(i).getColor());
                     drawCurrent(stations.get(City.indexOf(active.get(i).getRoute().get(j).getVertexOne().getID())),
                             stations.get(City.indexOf(active.get(i).getRoute().get(j).getVertexTwo().getID())));                    
-                }
-                move(active.get(i));
+                }                
       
                 String stop = active.get(i).getCurrentEdge().getVertexTwo().getID();
                 
@@ -330,17 +333,16 @@ public class Draw {
                      active.get(i).getRoute().removeFirst();
                      
                      if (active.get(i).getRoute().size() >= 1) {
-                     active.get(i).setCurrentEdge(active.get(i).getRoute().getFirst());     
+                         active.get(i).setCurrentEdge(active.get(i).getRoute().getFirst());     
                      }else {
                          active.remove(i);
                          i--;
                          System.out.println("Done");
                      }
                 }
-                
-                 
-                
-             }
+                if (trains.isEmpty()) {
+                    return;
+                }
             }
             ticks++;
             StdDraw.show(1);
