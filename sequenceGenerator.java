@@ -29,7 +29,7 @@ public class SequenceGenerator {
 	public static final String[] AMTRAK_STATIONS = {"Miami", "West Palm Beach", "Orlando", "Jacksonville", "Tallahassee",
 		"Pensacola", "Mobile", "New Orleans", "Lafayette", "Houston", "San Antonio", "El Paso", "Tucson",
 		"Maricopa", "Palm Springs", "Los Angeles", "Santa Barbara", "San Luis Obispo", "San Jose", "Oakland",
-		"Stockton", "Fresno", "Sacramento", "Redding", "Eugene", "Portland", "Seattle", "Everett", "Spokane",
+		"Stockton", "Fresno", "Sacramento", "Redding", "Eugene", "Portland OR", "Portland", "Seattle", "Everett", "Spokane",
 		"Minneapolis", "Milwaukee", "Chicago", "Galesburg", "Omaha", "Denver", "Salt Lake City", "Kansas City",
 		"Topeka", "Albuquerque", "Flagstaff", "St. Louis", "Little Rock", "Texarkana", "Dallas", "Fort Worth",
 		"Memphis", "Battle Creek", "Detroit", "Indianapolis", "Cincinnati", "Cleveland", "Pittsburgh", "Harrisburg",
@@ -37,7 +37,7 @@ public class SequenceGenerator {
 		"New York", "Trenton", "Philadelphia", "Baltimore", "Washington", "Charlottesville", "Lynchburg", "Greensboro",
 		"Raleigh", "Columbia", "Selma", "Fayetteville", "Charleston", "Richmond", "Charlotte", "Atlanta", "Birmingham",
 		"Tampa", "Savannah", "Tuscaloosa", "Jackson", "Austin", "San Diego", "San Bernardino", "Bakersfield", "Vancouver",
-		"Milwaukee", "Quincy", "Oklahoma City", "Grand Rapids", "Port Huron", "Pontiac", "Toronto", "Montreal", "Brunswick",
+		"Quincy", "Oklahoma City", "Grand Rapids", "Port Huron", "Pontiac", "Toronto", "Montreal", "Brunswick",
 		"Newport News", "Norfolk"};
 	
 	public static final String[] EUROPE_STATIONS = {"Aix-en-Provence", "Amsterdam", "Angers", "Angouleme", "Antwerpen", "Avignon",
