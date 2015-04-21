@@ -140,8 +140,9 @@ public class Simulator {
             String s = String.format("%-5.5s", train.getID() + ",");
             String d = String.format("%-1.3s", train.getSpeed() + ",");
             String dt = String.format("%7.7s", train.getActualDepartureTime() + ",");
+            String at = String.format("%7.7s", train.getActualArrivalTime() + ",");
             String t = String.format("%3.3s,    ", train.getType().ordinal());
-            writer.print(s + d + dt + t);
+            writer.print(s + d + dt + at + t);
             writer.print(train.getRoute());
             writer.print(",    ");
             writer.println(train.getDelays());
