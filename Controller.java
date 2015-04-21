@@ -22,7 +22,7 @@ public class Controller {
 
         for (Train train : sequence) {
         	// check if the current train is valid for departure
-            if ((!train.hasArrived()) && (train.getDepatureTime() <= ticks) && (!runningTrains.getRunningList().contains(train))) {
+            if ((train.getDepatureTime() <= ticks) && (!train.hasArrived()) && (!runningTrains.getRunningList().contains(train))) {
             	// try to add the train to the schedule
                 if (runningTrains.add(train, ticks)) {
                 	// if successful increment the running train count and set the actual departure time
@@ -38,13 +38,17 @@ public class Controller {
                 numTrainsRunning--;
                 //System.out.println(numTrainsRunning);
             }
+            
             //System.out.println(runningTrains.getTrainsDelaying()  + " , " + runningTrains.getTrainsMoving());
+            
             // re-calculate delays in case of dead lock
             if ((runningTrains.getRunningList().size() == runningTrains.getTrainsDelaying()) && (runningTrains.getRunningList().contains(train))) {
-            	runningTrains.getRunningList().clear();
+            	
+                runningTrains.getRunningList().clear();
             	numTrainsRunning = 0;
             	runningTrains.setTrainsDelaying(0);
             	runningTrains.setTrainsMoving(0);
+            	
             	if (runningTrains.add(train, ticks)) {
             		 runningTrains.setTrainsMoving(runningTrains.getTrainsMoving() + 1);
             		 numTrainsRunning++;
