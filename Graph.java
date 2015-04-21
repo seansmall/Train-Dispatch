@@ -86,7 +86,7 @@ public class Graph {
 		dijkstra(set);
 	}
 	
-	public void dijkstra(NavigableSet<Vertex> set) {
+	private void dijkstra(NavigableSet<Vertex> set) {
 		Vertex one;
 		Vertex two;
 		// loop until all vertices are removed from the set
@@ -146,6 +146,7 @@ public class Graph {
 	
 	@Override
 	public String toString() {
+		// returns a string with every vertex in the graph and their distances
 		String s = "";
 		
 		for (Map.Entry<String, Vertex> e : graph.entrySet()) {
@@ -155,6 +156,7 @@ public class Graph {
 	}
 	
 	public String getTree() {
+		// returns a string with every vertex in the graph, their distances, and their adjacency lists
 		String s = "";
 		
 		for (Map.Entry<String, Vertex> e : graph.entrySet()) {
@@ -169,7 +171,7 @@ public class Graph {
 	}
 	
 	public static LinkedList<Edge> readGDF(final File file) throws FileNotFoundException {
-		
+		// read a gdf format file and make a list of edges
 		LinkedList<Edge> edges = new LinkedList<Edge>();
 		
 		try {
@@ -200,7 +202,7 @@ public class Graph {
 	}
 	
     public static LinkedList<Edge> read(final String fileName) {
-        
+        // read a text file to make a list of edges
         LinkedList<Edge> edges = new LinkedList<Edge>();
         
         File file = new File(fileName);
@@ -228,17 +230,16 @@ public class Graph {
         return edges;
     }
     
-    
+    /*
 	public static void main (final String[] args) throws FileNotFoundException {
 		
 		Graph test = new Graph("Europe Map Data.txt");
 		
 		test.dijkstra("Berlin");
-		// TODO Los Angeles is not being added back into the set during Dijkstra's
 		System.out.println(test.getPath("London"));
 		
 		System.out.println("Done");
 
 	}
-	
+	*/
 }
