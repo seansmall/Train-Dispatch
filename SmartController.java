@@ -26,18 +26,21 @@ public class SmartController extends Controller {
                     System.out.println(numTrainsRunning);
                 }
             // the train has arrived remove it from the schedule and decrement the running train count
-            } else if (train.hasArrived() && (runningTrains.getRunningList().contains(train))) {
+            } else if (train.hasArrived() && runningTrains.getRunningList().contains(train)) {
                 runningTrains.remove(train);
                 numTrainsRunning--;
                 //System.out.println(numTrainsRunning);
             }
-           // System.out.println(runningTrains.getTrainsDelaying()  + " , " + runningTrains.getTrainsMoving());
+            // System.out.println(runningTrains.getTrainsDelaying()  + " , " + runningTrains.getTrainsMoving());
+            
             // re-calculate delays in case of dead lock
-            if ((runningTrains.getRunningList().size() == runningTrains.getTrainsDelaying()) && (runningTrains.getRunningList().contains(train))) {
+            if ((runningTrains.getRunningList().size() == runningTrains.getTrainsDelaying())) {
+                
             	runningTrains.getRunningList().clear();
             	numTrainsRunning = 0;
             	runningTrains.setTrainsDelaying(0);
             	runningTrains.setTrainsMoving(0);
+            	
             	if (runningTrains.add(train, ticks)) {
             		 runningTrains.setTrainsMoving(runningTrains.getTrainsMoving() + 1);
             		 numTrainsRunning++;
