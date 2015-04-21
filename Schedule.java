@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.LinkedList;
 
 
@@ -8,7 +9,7 @@ public class Schedule {
     
     protected LinkedList<Train> runningList;						// the list of trains currently in the schedule
     protected int trainsMoving = 0;									// number of trains moving on the map
-    protected int trainsDelaying = 0;									// number of trains being delayed
+    protected int trainsDelaying = 0;								// number of trains being delayed
 
     public Schedule() {
         runningList = new LinkedList<Train>();
@@ -59,11 +60,13 @@ public class Schedule {
                 	// if the new train is of higher priority set the currently running train to stop at the next station and
                 	// wait until the higher priority train has completed its route, set the new train to wait at its source
                 	// until the currently running train reaches the next station
-            		t1.setDelayStop(t1.getSourceName());
-            		t1.setDelayTime((routeTwo.get(j).getWeight() - t2.getDistanceTraveled()) / t2.getSpeed() + time);
-            		
-            		t2.setDelayStop(routeTwo.get(j).getVertexOne().getID());
-            		t2.setDelayTime((routeOne.getLast().getWeight() / t1.getSpeed()) + t1.getDelayTime());
+                	final Delay t1Delay = new Delay(t1.getSourceName(), (routeTwo.get(j).getWeight() - t2.getDistanceTraveled()) / t2.getSpeed() + time);
+                	final Delay t2Delay = new Delay(routeTwo.get(j).getVertexOne().getID(), (routeOne.getLast().getWeight() / t1.getSpeed()) + t1Delay.getTime());
+
+                	t1.getDelays().add(t1Delay);
+                	t2.getDelays().add(t2Delay);
+                	Collections.sort(t1.getDelays());
+                	Collections.sort(t2.getDelays());
             		
             		t2.setWaitCount(t2.getWaitCount() + 1);
             		
@@ -89,33 +92,30 @@ public class Schedule {
                 System.out.println("train " + train.getID() + " took route " + train.getRoute().toString() + "\r");
             }
             
+            
         	// if the train reaches the delay station then it should stop moving until after the delay time
             // has passed
-            if ((!train.hasArrived()) && (runningList.contains(train)) && (train.getDelayStop().equals(train.getLastStation()))) {
-                if ((train.getDelayTime() > time) && (train.isMoving()) && (runningList.size() != trainsDelaying)) {
-                    train.park();
-                    trainsDelaying++;
-                    trainsMoving--;
-                    System.out.println(" at " + time + " train " + train.getID() + " will delay at " + train.getDelayStop() + " until " + train.getDelayTime());
-                } else if ((train.getDelayTime() < time) && (train.isParked())) {
-                    train.running();
-                    trainsMoving++;
-                    trainsDelaying--;
-                    System.out.println(" at " + time + " train " + train.getID() + " resumed running from " + train.getDelayStop());
-                }
-                /*
-                for (int i = 0; i < runningList.size(); i++) {
-                	if ((train.getDelayStop().equals(runningList.get(i).getDelayStop())) && ((train.getDelayTime() < time)) && (train.isParked() == runningList.get(i).isParked())) {
-                        train.running();
+            for (int i = 0; i < train.getDelays().size(); i++) {
+            	
+                if (train.getDelays().get(i).getStation().equals(train.getLastStation())) {
+                	
+                    if ((train.getDelays().get(i).getTime() > time) && (train.isMoving())) {
+                        
+                    	train.park();
+                        trainsDelaying++;
+                        trainsMoving--;
+                        System.out.println(" at " + time + " train " + train.getID() + " will delay at " + train.getDelays().get(i).getStation() + " until " + train.getDelays().get(i).getTime());
+                    
+                    } else if ((train.getDelays().get(i).getTime() < time) && (train.isParked())) {
+                        
+                    	train.running();
                         trainsMoving++;
                         trainsDelaying--;
-                        System.out.println(" at " + time + " train " + train.getID() + " resumed running from " + train.getDelayStop());
-                        break;
-                	}
+                        System.out.println(" at " + time + " train " + train.getID() + " resumed running from " + train.getDelays().get(i).getStation());
+                        //train.getDelays().remove(train.getDelays().get(i));
+                    }
                 }
-                */
             }
-            
             
             // if the train is not parked for a delay call move
             if (train.isMoving()) {
