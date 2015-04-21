@@ -12,8 +12,8 @@ public class Simulator {
         
     	int numTrains = 50;
     	int ticks = 720;
-    	int numTrials = 1000;
-    	int numIncrements = 5;
+    	int numTrials = 1;
+    	int numIncrements = 1;
     	int maps = 2;
     	String map;    	
     	
@@ -69,6 +69,9 @@ public class Simulator {
         	        System.out.println("Base Case Delay: " + base.getDelaySum());
         	        System.out.println("Test Case Delay: " + test.getDelaySum());
         	        System.out.println("done\r\r");
+        	        
+        	        saveTrainInfo(baseSequence ,map + " base case animation data");
+        	        saveTrainInfo(testSequence ,map + " test case animation data");
         	        
         	        baseWriter.println(base.getDelaySum() + ",");
         	        testWriter.println(test.getDelaySum() + ",");
@@ -136,11 +139,12 @@ public class Simulator {
         for (Train train : sequence) {
             String s = String.format("%-5.5s", train.getID() + ",");
             String d = String.format("%-1.3s", train.getSpeed() + ",");
-            String dt = String.format("%7.7s,", train.getActualDepartureTime());
-            String t = String.format("%-1.1s,", train.getType().ordinal());
+            String dt = String.format("%7.7s", train.getActualDepartureTime() + ",");
+            String t = String.format("%3.3s,    ", train.getType().ordinal());
             writer.print(s + d + dt + t);
-            writer.print(s + d + dt);
-            writer.println(train.getRoute());
+            writer.print(train.getRoute());
+            writer.print(",    ");
+            writer.println(train.getDelays());
         }
         writer.close();
     }
