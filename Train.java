@@ -273,4 +273,38 @@ public class Train {
 	public void setWaitCount(int waitCount) {
 		this.waitCount = waitCount;
 	}
+	    public Coordinates getCoordinates() {
+        return coordinate;
+    }
+
+    public void setCoordinates(Coordinates a) {
+        coordinate = new Coordinates(a.getX(), a.getY());
+    }
+
+    public Edge getCurrentEdge () {
+        return currentEdge;
+    }
+    
+    public void setCurrentEdge (Edge a) {
+        currentEdge = new Edge(a.getVertexOne(),a.getVertexTwo(),a.getWeight());
+    }
+    
+    public void setRandomColor () {
+        Random rng = new Random();
+        color = new Color(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+    }
+    
+    public Color getColor () {
+        return new Color(color.getRGB());
+    }
+    
+    public void setRoute (LinkedList<Edge> edges) {
+        route.clear();
+        for (int i = 0; i < edges.size(); i++) {
+            route.add(new Edge(edges.get(i).getVertexOne(), edges.get(i).getVertexTwo(), edges.get(i).getWeight()));
+        }
+        lastStation = route.getFirst().getVertexOne().getID();
+        expectedArrivalTime = route.getLast().getWeight() / speed + departureTime;
+    }
+    
 }
