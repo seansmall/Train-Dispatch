@@ -25,6 +25,7 @@ public class Train {
     private int distanceTraveled = 0;							// the current distance this train has traveled
     private int waitLimit = 2;									// max number of time the train can be made to wait in favor of a higher priority train
     private int waitCount = 0;									// number of times this train has been made to delay in favor of a higher priority train
+    private int waitingTime = 0;                             // How long the train has waited for the animation class
     
     private boolean moving;										// if this train is moving or parked
     private boolean arrived = false;							// if this train has arrived at its destination or not
@@ -279,5 +280,20 @@ public class Train {
 	}
 	public void setDelays(ArrayList<Delay> delays) {
 		this.delayStations = delays;
+	}
+	
+	public void setRoute (LinkedList<Edge> edges) {
+	    route.clear();
+	    for (int i = 0; i < edges.size(); i++) {
+	        route.add(new Edge(edges.get(i).getVertexOne(), edges.get(i).getVertexTwo(), edges.get(i).getWeight()));
+	    }
+	}
+	
+	public int getWaitingTime () {
+	    return waitingTime;
+	}
+	
+	public void setWaitingTime (int t) {
+	    waitingTime = t;
 	}
 }
