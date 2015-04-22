@@ -18,29 +18,28 @@ public class Draw {
     private static ArrayList<Coordinates> lines = new ArrayList<Coordinates>();
     private static int ticks = 0;
     private static ArrayList<Train> trains = new ArrayList<Train>();
-    private static LinkedList<Edge> edge = new LinkedList<Edge>();
     
     public static void main (String[] args) throws IOException {
         
         StdDraw.setCanvasSize(1300, 680);
         StdDraw.setXscale(-650, 650);
         StdDraw.setYscale(-340,340);
+        
          map = "Amtrak System Map.png";
          if (map.contains("Amtrak")) {
              for (int i = 0; i < SequenceGenerator.AMTRAK_STATIONS.length; i++) {
              City.add(SequenceGenerator.AMTRAK_STATIONS[i]);
              }    
              readCoordinates("Amtrak Coordinates.txt");
-            readLines("Amtrak System Map Data.txt");
-            edge = Graph.read("Amtrak System Map Data.txt");
+            readLines("Amtrak System Data.txt");
          }else {
              for (int i = 0; i < SequenceGenerator.EUROPE_STATIONS.length; i++) {
              City.add(SequenceGenerator.EUROPE_STATIONS[i]);
              }    
              readCoordinates("Europe Coordinates.txt");
-             readLines("High Speed Europe Map Data.txt");
-             edge = Graph.read("High Speed Europe Map Data.txt");
+             readLines("Europe Map Data.txt");
          }
+         
          if (args.length != 0) {
              if (args[0].equals("edit")) {
             findStations();            
@@ -51,9 +50,11 @@ public class Draw {
          }
         
         animation();
-                        
-    }
-    
+
+    }    
+  //***************************************
+  //Draws each of the stations
+  //***************************************
     public static void drawStation () {
         for (int i = 0; i < stations.size(); i++) {
             StdDraw.setPenColor(StdDraw.BOOK_RED);
@@ -62,11 +63,11 @@ public class Draw {
             StdDraw.setPenColor(StdDraw.WHITE);
             StdDraw.text(stations.get(i).getX(), stations.get(i).getY(), Integer.toString(i+1));
             StdDraw.setPenColor(StdDraw.BLACK);
-            //StdDraw.setPenRadius(.1);
-            //StdDraw.text(stations.get(i).getX() + 70, stations.get(i).getY(), City.get(i));
         }
-    }
-    
+    }    
+    //***************************************
+    //Reads the coordinates of the stations
+    //***************************************
     private static void readCoordinates (String newPoints) throws FileNotFoundException {
         Scanner std = new Scanner(new File (newPoints));
         std.useDelimiter(",");
@@ -85,7 +86,9 @@ public class Draw {
         }
         std.close();
     }
-    
+    //***************************************
+    //Part of the editing stage
+    //***************************************
     private static void findStations () {
         while(true) { 
             StdDraw.picture(0, 0, map);
@@ -96,7 +99,9 @@ public class Draw {
             }
         }
     }
-    
+    //***************************************
+    //Part of the editing stage
+    //***************************************
     private static void editStations () throws FileNotFoundException {
         while (true) {
             drawBackground();
@@ -122,18 +127,21 @@ public class Draw {
         }
         stn.close();
     }
-    
+  //***************************************
+    //Draws the Background
+    //***************************************
     public static void drawBackground () throws FileNotFoundException {
         StdDraw.clear();
         StdDraw.picture(0, 0, map);
         StdDraw.setPenColor(StdDraw.BOOK_RED);
         StdDraw.setPenRadius(.01);  
-        readLines("Amtrak System Map Data.txt");
         drawLines();
         drawStation();
         
     }
-    
+    //***************************************
+    //Reads the connections between points
+    //***************************************
     private static void readLines (String name) throws FileNotFoundException {
         lines.clear();
         Scanner std = new Scanner(new File (name));
@@ -149,7 +157,9 @@ public class Draw {
         }
         std.close();
     }
-    
+    //***************************************
+    //Part of the editing stage
+    //***************************************
     private static void editLines () throws FileNotFoundException { 
         int i = 0, count = 0; 
         ArrayList<Coordinates> points = new ArrayList<Coordinates>();
@@ -184,7 +194,9 @@ public class Draw {
         }
         stn.close();
     }
-
+    //***************************************
+    //Draws the train lines
+    //***************************************
     private static void drawLines () {
         for (int i = 0; i < lines.size(); i+=2 ) {
             StdDraw.setPenRadius(.01);
@@ -197,18 +209,20 @@ public class Draw {
                         lines.get(i+1).getX(), lines.get(i+1).getY());
         }
     }
-
+    //***************************************
+    //Draws the train
+    //***************************************
     public static void drawTrain (Train a) {
         StdDraw.setPenRadius(.01);        
         StdDraw.setPenColor(a.getColor());
-       // int[] x = new int[4]; int[] y = new int[4];
-        //x[0] = 
         StdDraw.filledRectangle(a.getCoordinates().getX(), a.getCoordinates().getY(), 20, 10);
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.text(a.getCoordinates().getX(), a.getCoordinates().getY(), Integer.toString(a.getID()), 45);
 
     }
-    
+    //***************************************
+    //Reads all the information for the animation
+    //***************************************
     public static void readSchedule (String filename) throws IOException {
         int i = 0;
         Scanner stdinput = new Scanner(Paths.get(filename));
@@ -220,7 +234,8 @@ public class Draw {
             stdinput1.useDelimiter(",\\s*");
             int id = stdinput1.nextInt();
             int speed = stdinput1.nextInt();
-            int time = stdinput1.nextInt();
+            int depart = stdinput1.nextInt();
+            int arrival = stdinput1.nextInt();
             int type = stdinput1.nextInt();
             ArrayList<Delay> delay = new ArrayList<Delay>();
             String a = stdinput1.next();
@@ -231,10 +246,15 @@ public class Draw {
                     f = f.substring(0, f.indexOf("]"));
                 }
                 edges.add(new Edge(new Vertex(a.substring(1)), new Vertex(e), Integer.parseInt(f)));
-                while (stdinput1.hasNext()) {
+                while (stdinput1.hasNext()) {                    
                     String b = stdinput1.next();
+                    if (b.equals("[]")) {
+                        break;
+                    }
+ 
                     String c = stdinput1.next();
-                    String d = stdinput1.next();
+                    String d = stdinput1.next();                    
+                    
                      if (d.contains("]")) {
                          d = d.substring(0, d.indexOf("]"));
                          edges.add(new Edge(new Vertex(b), new Vertex(c), Integer.parseInt(d)));
@@ -242,74 +262,83 @@ public class Draw {
                      }else {
                          edges.add(new Edge(new Vertex(b), new Vertex(c), Integer.parseInt(d)));
                      }
+                     
                 }
                 
             }
-            String b = stdinput1.next();
-            if (b.length() > 2) {
-                String d_station = b.substring(1, b.lastIndexOf(" "));
-                int d_time = Integer.parseInt(b.substring(b.lastIndexOf(" ")+1, b.indexOf("]")));
-                delay.add(new Delay(d_station, d_time));
-            }
+            //Adds delays
+            while (stdinput1.hasNext()) {
+                String b = stdinput1.next();   
+                if(b.length() > 2) {
+                    if (b.contains("]") && b.contains("[")) {
+                        delay.add(new Delay(b.substring(1, b.lastIndexOf(" ")), Integer.parseInt(b.substring(b.lastIndexOf(" ")+1, b.indexOf("]")))));
+                    }else if (b.contains("[")){
+                        delay.add(new Delay(b.substring(1, b.lastIndexOf(" ")), Integer.parseInt(b.substring(b.lastIndexOf(" ")+1))));                                     
+                    }else if (b.contains("]")){
+                        delay.add(new Delay(b.substring(0, b.lastIndexOf(" ")), Integer.parseInt(b.substring(b.lastIndexOf(" ")+1, b.indexOf("]")))));   
+                    }
+                }
+                
+            }    
             for (int j = edges.size() - 1; j > 0; j--) {
                 edges.get(j).setWeight(edges.get(j).getWeight() - edges.get(j - 1).getWeight());
             }
+            //Initializes trains
             trains.add(new Train(edges.getFirst().getVertexOne().getID(),edges.getLast().getVertexTwo().getID(),
-                    time, id, type));           
+                   depart, id, type));      
             trains.get(i).setSpeed(speed);
             trains.get(i).setRoute(edges);
             trains.get(i).setCurrentEdge(edges.get(0));
             trains.get(i).setRandomColor();
             trains.get(i).setCoordinates(stations.get(City.indexOf(edges.get(0).getVertexOne().getID())));
             trains.get(i).setDelays(delay);
+            trains.get(i).setWaitLimit(0);
+            trains.get(i).setActualArrivalTime(arrival);
             stdinput1.close();
             i++;
         }
         
         stdinput.close();
     }
-    
-    public static int findIndex (String source,String destination) {
-        
-        for (int i = 0; i < edge.size(); i++) {
-            if (edge.get(i).getVertexOne().getID().equals(source)) {
-                if (edge.get(i).getVertexTwo().getID().equals(destination)) {
-                    return i;
-                }
-            }else if (edge.get(i).getVertexOne().getID().equals(destination)) {
-                if (edge.get(i).getVertexTwo().getID().equals(source)) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
+    //***************************************
+    //Moves the train 
+    //***************************************
     public static void move (Train running) {
+        
        Coordinates a = new Coordinates(running.getCoordinates().getX(), running.getCoordinates().getY());
        Coordinates first = stations.get(City.indexOf(running.getCurrentEdge().getVertexOne().getID()));
        Coordinates second = stations.get(City.indexOf(running.getCurrentEdge().getVertexTwo().getID())); 
        Coordinates ratio = new Coordinates(second.subtract(first).getX(), second.subtract(first).getY());
+       
        double t = running.getCurrentEdge().getWeight() / running.getSpeed();
        ratio.divide(t);
        a.add(ratio);
+       
        if(t <= ticks + 1 && t >= ticks-1) {
            Coordinates b = stations.get(City.indexOf(running.getRoute().getFirst().getVertexTwo().getID()));
            running.setCoordinates(new Coordinates(b.getX(), b.getY()));
-//       }else if (running.getActualArrivalTime() == ticks) {
-//           Coordinates b = stations.get(City.indexOf(running.getRoute().getLast().getVertexTwo().getID()));
-//           running.setCoordinates(new Coordinates(b.getX(), b.getY()));
+       }else if (running.getActualArrivalTime() == ticks) {
+           Coordinates b = stations.get(City.indexOf(running.getRoute().getLast().getVertexTwo().getID()));
+           running.setCoordinates(new Coordinates(b.getX(), b.getY()));
        }else {
            running.setCoordinates(new Coordinates(a.getX(), a.getY()));
        }
        
        drawTrain(running);
+       for (int j = 0; j < running.getRoute().size(); j++) {
+           String start = running.getRoute().get(j).getVertexOne().getID();
+           String end = running.getRoute().get(j).getVertexTwo().getID();
+           StdDraw.setPenColor(running.getColor());
+           drawCurrent(stations.get(City.indexOf(start)),stations.get(City.indexOf(end)));
+       }
     }
-    
+    //***************************************
+    //Highlights stations that trains have arrived in
+    //***************************************
     public static void atStation (Coordinates stop) {
         StdDraw.setPenColor(StdDraw.WHITE);
         StdDraw.setPenRadius(.05);
-        StdDraw.point(stop.getX(), stop.getY());
+        StdDraw.point(stop.getX(), stop.getY());        
     }
     
     public static void drawCurrent (Coordinates start, Coordinates end) {
@@ -321,22 +350,28 @@ public class Draw {
         StdDraw.line(start.getX(), start.getY(),
                     end.getX(), end.getY());
     }
-    
-//    public static ArrayList<Integer> lockRoute (Train a) {
-//        ArrayList<Integer> b= new ArrayList<Integer>(); 
-//        for (int i = 0; i < a.getRoute().size(); i++) {
-//            StdDraw.setPenColor(a.getColor());
-//            b.add(City.indexOf(a.getRoute().get(i).getVertexOne().getID()));
-//            b.add(City.indexOf(a.getRoute().get(i).getVertexTwo().getID()));                    
-//       }
-//    }
 
+    public static void printDelay(ArrayList<Train> delayed) {
+        double x = 320; double y = 620;
+        for (int i = 0; i < delayed.size(); i++) {
+            String station = delayed.get(0).getDelays().get(0).getStation();
+            int time = delayed.get(0).getDelays().get(0).getTime();;
+            x = x + (10*i); y = y + (10*i);
+            StdDraw.text(x, y, "Train "+delayed.get(0).getID()+" was delayed at "+station+
+                   " for "+time );
+        }
+    }
+    
     public static void animation () throws IOException {
-        readSchedule("Amtrak data file 50 trains.txt");
+        
+        readSchedule("amtrak test case animation data.txt");
         ArrayList<Train> active = new ArrayList<Train>();
+        ArrayList<Train> delayed = new ArrayList<Train>();
         StdDraw.show(1);
         while (true) {
             drawBackground();
+            
+            //Adds trains to the trains being drawn if it's meant to leave
             for (int i = 0; i < trains.size(); i++) {
                 if (trains.get(i).getDepatureTime() == ticks) {
                     active.add(trains.get(i));
@@ -344,41 +379,54 @@ public class Draw {
                     i--;
                 }
             }
+            
+            //Draws trains on the field
             for (int i = 0; i < active.size(); i++) {
-                StdDraw.textRight(650, 340, "Time: "+Integer.toString(ticks));
+                StdDraw.textRight(650, 340, "Time: "+Integer.toString(ticks));         
+                //Checks Delays
                 if (active.get(i).getDelays().isEmpty()) {
                     move(active.get(i));
                 }else {
                     String delay = active.get(i).getDelays().get(0).getStation();
                     if (active.get(i).getCoordinates().isEqualTo(stations.get(City.indexOf(delay)))) {
                         if (active.get(i).getWaitingTime() == 0) {
-                            active.get(i).setWaitCount(ticks);
+                            active.get(i).setWaitCount(ticks);                            
                         }
                         active.get(i).setWaitingTime(active.get(i).getWaitingTime()+1);
+                        
+                        StdDraw.setPenRadius(.05);        
+                        StdDraw.setPenColor(active.get(i).getColor());
+                        StdDraw.point(active.get(i).getCoordinates().getX(), active.get(i).getCoordinates().getY());
+                        delayed.add(active.get(i));
+                        //printDelay(delayed);
+
                         if (active.get(i).getWaitingTime() == active.get(i).getWaitCount() + active.get(i).getDelays().get(0).getTime()) {
                             move(active.get(i));
+                            active.get(i).getDelays().remove(0);
+                            active.get(i).setWaitingTime(0);
+                            delayed.remove(active.get(i));
                         }
                     }else {
                         move(active.get(i));
                     }    
-                }
-                        
-      
-                String stop = active.get(i).getCurrentEdge().getVertexTwo().getID();
-                
+                }                        
+                //Checks if the train is at a stop
+                String stop = active.get(i).getCurrentEdge().getVertexTwo().getID();                
                 if (active.get(i).getCoordinates().isEqualTo(stations.get(City.indexOf(stop)))) {
-                     atStation(active.get(i).getCoordinates());
-                     active.get(i).getRoute().removeFirst();    
-                     
+                     atStation(stations.get(City.indexOf(stop)));
+                     active.get(i).setCoordinates(stations.get(City.indexOf(stop)));
+                     active.get(i).getRoute().removeFirst();                         
                      if (active.get(i).getRoute().size() >= 1) {
                          active.get(i).setCurrentEdge(active.get(i).getRoute().getFirst());     
                      }else {
                          active.remove(i);
                          i--;
-                         System.out.println("Done");
                      }
                 }
-                if (trains.isEmpty()) {
+                //Checks if the simulation is over
+                if (trains.isEmpty() && active.isEmpty()) {
+                    StdDraw.clear();
+                    StdDraw.text(0, 0, "Simulation Over");
                     return;
                 }
             }
