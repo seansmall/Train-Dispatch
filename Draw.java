@@ -324,13 +324,13 @@ public class Draw {
            running.setCoordinates(new Coordinates(a.getX(), a.getY()));
        }
        
-       drawTrain(running);
        for (int j = 0; j < running.getRoute().size(); j++) {
            String start = running.getRoute().get(j).getVertexOne().getID();
            String end = running.getRoute().get(j).getVertexTwo().getID();
            StdDraw.setPenColor(running.getColor());
            drawCurrent(stations.get(City.indexOf(start)),stations.get(City.indexOf(end)));
        }
+       drawTrain(running);
     }
     //***************************************
     //Highlights stations that trains have arrived in
