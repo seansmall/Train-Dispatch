@@ -37,7 +37,7 @@ public class Coordinates {
    }
    
    public boolean isEqualTo (Coordinates a) {
-       if (x <= a.getX() + 20 && x >= a.getX() - 20 && y <= a.getY() + 20 && y >= a.getY() - 20) {
+       if (x <= a.getX() + 10 && x >= a.getX() - 10 && y <= a.getY() + 10 && y >= a.getY() - 10) {
            return true;
        }
        return false;
