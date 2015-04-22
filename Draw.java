@@ -322,7 +322,7 @@ public class Draw {
            running.setCoordinates(new Coordinates(b.getX(), b.getY()));
        }else {
            running.setCoordinates(new Coordinates(a.getX(), a.getY()));
-       }
+       }      
        
        for (int j = 0; j < running.getRoute().size(); j++) {
            String start = running.getRoute().get(j).getVertexOne().getID();
@@ -352,13 +352,14 @@ public class Draw {
     }
 
     public static void printDelay(ArrayList<Train> delayed) {
-        double x = 320; double y = 620;
+        StdDraw.setPenColor(StdDraw.BLACK);
+        double x = -690; double y = 0;
         for (int i = 0; i < delayed.size(); i++) {
-            String station = delayed.get(0).getDelays().get(0).getStation();
-            int time = delayed.get(0).getDelays().get(0).getTime();;
-            x = x + (10*i); y = y + (10*i);
-            StdDraw.text(x, y, "Train "+delayed.get(0).getID()+" was delayed at "+station+
-                   " for "+time );
+            String station = delayed.get(i).getDelays().get(0).getStation();
+            int time = delayed.get(i).getDelays().get(0).getTime();;
+            y = -370 + (20*i);
+            StdDraw.textLeft(x, y, "Train "+delayed.get(i).getID()+" was delayed at "+station+
+                   " for "+time+" ticks" );
         }
     }
     
@@ -397,8 +398,11 @@ public class Draw {
                         StdDraw.setPenRadius(.05);        
                         StdDraw.setPenColor(active.get(i).getColor());
                         StdDraw.point(active.get(i).getCoordinates().getX(), active.get(i).getCoordinates().getY());
-                        delayed.add(active.get(i));
-                        //printDelay(delayed);
+                        if (delayed.indexOf(active.get(i)) == -1) {
+                            delayed.add(active.get(i));
+                        }
+                        
+                        printDelay(delayed);
 
                         if (active.get(i).getWaitingTime() == active.get(i).getWaitCount() + active.get(i).getDelays().get(0).getTime()) {
                             move(active.get(i));
