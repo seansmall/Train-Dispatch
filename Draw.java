@@ -330,6 +330,10 @@ public class Draw {
            StdDraw.setPenColor(running.getColor());
            drawCurrent(stations.get(City.indexOf(start)),stations.get(City.indexOf(end)));
        }
+       
+       if (running.getCoordinates().isOutOfRange(stations.get(City.indexOf(running.getCurrentEdge().getVertexTwo().getID())))) {
+           running.setCoordinates(stations.get(City.indexOf(running.getCurrentEdge().getVertexTwo().getID())));
+       }
        drawTrain(running);
     }
     //***************************************
@@ -363,6 +367,7 @@ public class Draw {
         }
     }
     
+   
     public static void animation () throws IOException {
         
         readSchedule("amtrak test case animation data.txt");
