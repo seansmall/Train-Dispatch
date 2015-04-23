@@ -42,4 +42,11 @@ public class Coordinates {
        }
        return false;
    }
+   
+   public boolean isOutOfRange (Coordinates a) {
+       if ((Math.abs(x - a.getX()) > 30) && Math.abs(y - a.getY()) > 30) {
+           return true;
+       }
+       return false;
+   }
 }
